@@ -1,15 +1,13 @@
-import './App.css'
-import { Editor, Sidebar } from './components/_all'
+import { Editor, Sidebar } from "./components/_all";
+import "./styles.css";
 
 function App() {
   return (
-    <>
-      <div className="app_container">
-        <Sidebar />
-        <Editor />
-      </div>  
-    </>
-  )
+    <div className="h-full w-full">
+      <Sidebar />
+      <Editor />
+    </div>
+  );
 }
 
-export default App
+export default App;

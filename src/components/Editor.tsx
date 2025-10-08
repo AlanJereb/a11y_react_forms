@@ -3,14 +3,14 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
+  const [isDraggedOver, setIsDraggedOver] = useState(true);
   const [droppedItems, setDroppedItems] = useState<string[]>([]);
 
   useEffect(() => {
     const cleanup = dropTargetForElements({
       element: ref.current!,
       canDrop: (args) => args.source.data.type === "card",
-      onDragEnter: () => setIsDraggedOver(true),
+      onDragEnter: () => setIsDraggedOver(false),
       onDragLeave: () => setIsDraggedOver(false),
       onDrop: (args) => {
         setIsDraggedOver(false);
@@ -27,26 +27,65 @@ const Editor = () => {
   return (
     <div
       ref={ref}
-      className={`min-h-[400px] flex-7/10 rounded-[2rem] p-[2rem] transition-all duration-200 ${
-        isDraggedOver
-          ? "bg-blue-50 inset-shadow-[-10px_-10px_15px_0_#FFFFFF90,10px_10px_15px_0_#AEAEC040]"
-          : "inset-shadow-[-10px_-10px_10px_0_#FFFFFF70,10px_10px_10px_0_#AEAEC020]"
-      }`}
+      className={[
+        "min-h-[400px]",
+        "flex-7/10",
+        "place-content-center",
+        "rounded-[2rem]",
+        "p-[2rem]",
+        "inset-shadow-[-10px_-10px_10px_0_#FFFFFF70,10px_10px_10px_0_#AEAEC020]",
+        "transition-all",
+        "duration-200",
+      ].join(" ")}
     >
-      {droppedItems.length === 0 ? (
-        <div className="flex h-full items-center justify-center text-placeholder">
+      {droppedItems.length === 0 && !isDraggedOver ? (
+        <div
+          className={[
+            "text-placeholder",
+            "flex",
+            "h-full",
+            "items-center",
+            "justify-center",
+          ].join(" ")}
+        >
           <p className="text-[1.2rem]">
             Drop form fields here to build your form
           </p>
         </div>
       ) : (
-        <div className="space-y-[1rem]">
+        <div className="">
+          {isDraggedOver && droppedItems.length === 0 ? (
+            <div
+              className={[
+                "rounded-[1rem]",
+                "bg-neutral-50",
+                "p-[1rem]",
+                "mx-auto",
+                "min-w-[400px]",
+                "max-w-[600px]",
+                "text-center",
+              ].join(" ")}
+            >
+              <p className="text-[0.9rem] font-medium text-blue-600">
+                Release to add field
+              </p>
+            </div>
+          ) : null}
           {droppedItems.map((itemId, index) => (
             <div
               key={`${itemId}-${index}`}
-              className="rounded-[1rem] border border-gray-200 bg-white p-[1rem] shadow-sm"
+              className={[
+                "rounded-[1rem]",
+                "border",
+                "border-gray-200",
+                "bg-white",
+                "p-[1rem]",
+                "shadow-sm",
+                "transition-colors",
+                "hover:border-gray-300",
+              ].join(" ")}
             >
-              <p className="text-placeholder">{itemId}</p>
+              <p className="text-placeholder font-medium">{itemId}</p>
             </div>
           ))}
         </div>

@@ -1,25 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import type { DraggableItem, DraggableState } from "../../types/types";
+import type { DraggableItem, DraggableState } from "../../types/types.js";
+import Constants from "../../helpers/constants.js";
 
 const FieldText = (props: DraggableItem) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const itemId = props.itemId;
-  const [state, setState] = useState<DraggableState>("idle");
 
   useEffect(() => {
     const cleanup = combine(
       draggable({
         element: ref.current!,
-        getInitialData: () => ({ type: "card", itemId: itemId }),
+        getInitialData: () => ({
+          type: Constants.fieldTypeCard,
+          itemId: itemId,
+        }),
       }),
       dropTargetForElements({
         element: ref.current!,
-        canDrop: (args) => args.source.data.type === "card",
+        canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
       }),
     );
     return cleanup;

@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import FormCard from "./form/FormCard";
+import Title from "./form/FormTitle";
+import Constants from "../helpers/constants";
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isDraggedOver, setIsDraggedOver] = useState(true);
+  const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [droppedItems, setDroppedItems] = useState<string[]>([]);
 
   useEffect(() => {
     const cleanup = dropTargetForElements({
       element: ref.current!,
-      canDrop: (args) => args.source.data.type === "card",
-      onDragEnter: () => setIsDraggedOver(false),
+      canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
+      onDragEnter: () => setIsDraggedOver(true),
       onDragLeave: () => setIsDraggedOver(false),
       onDrop: (args) => {
         setIsDraggedOver(false);
@@ -53,23 +56,11 @@ const Editor = () => {
           </p>
         </div>
       ) : (
-        <div className="">
+        <div>
           {isDraggedOver && droppedItems.length === 0 ? (
-            <div
-              className={[
-                "rounded-[1rem]",
-                "bg-neutral-50",
-                "p-[1rem]",
-                "mx-auto",
-                "min-w-[400px]",
-                "max-w-[600px]",
-                "text-center",
-              ].join(" ")}
-            >
-              <p className="text-[0.9rem] font-medium text-blue-600">
-                Release to add field
-              </p>
-            </div>
+            <FormCard>
+              <Title text="Release to add field" />
+            </FormCard>
           ) : null}
           {droppedItems.map((itemId, index) => (
             <div

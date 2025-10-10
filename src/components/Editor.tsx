@@ -3,6 +3,7 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 import FormCard from "./form/FormCard";
 import Title from "./form/FormTitle";
 import Constants from "../helpers/constants";
+import FieldText from "./draggables/FieldText";
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -27,6 +28,16 @@ const Editor = () => {
     return cleanup;
   }, []);
 
+  // Renders the correct type of form element based on the dropped item ID
+  const renderFormElement = (itemId: string, index: number) => {
+    switch (itemId) {
+      case Constants.fieldTextFieldId:
+        return <FieldText itemId={itemId} index={index} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div
       ref={ref}
@@ -34,11 +45,12 @@ const Editor = () => {
         "min-h-[400px]",
         "flex-7/10",
         "place-content-center",
-        "rounded-[2rem]",
+        "rounded-t-[2rem]",
         "p-[2rem]",
         "inset-shadow-[-10px_-10px_10px_0_#FFFFFF70,10px_10px_10px_0_#AEAEC020]",
         "transition-all",
         "duration-200",
+        "overflow-y-auto",
       ].join(" ")}
     >
       {droppedItems.length === 0 && !isDraggedOver ? (
@@ -57,28 +69,17 @@ const Editor = () => {
         </div>
       ) : (
         <div>
-          {isDraggedOver && droppedItems.length === 0 ? (
+          {isDraggedOver && droppedItems.length === 0 && (
             <FormCard>
               <Title text="Release to add field" />
             </FormCard>
-          ) : null}
-          {droppedItems.map((itemId, index) => (
-            <div
-              key={`${itemId}-${index}`}
-              className={[
-                "rounded-[1rem]",
-                "border",
-                "border-gray-200",
-                "bg-white",
-                "p-[1rem]",
-                "shadow-sm",
-                "transition-colors",
-                "hover:border-gray-300",
-              ].join(" ")}
-            >
-              <p className="text-placeholder font-medium">{itemId}</p>
-            </div>
-          ))}
+          )}
+          {droppedItems.length > 0 && (
+            <FormCard>
+              {droppedItems.map((itemId, index) => renderFormElement(itemId, index))}
+            </FormCard>
+          )
+          }
         </div>
       )}
     </div>

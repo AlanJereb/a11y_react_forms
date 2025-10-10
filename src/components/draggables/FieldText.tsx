@@ -9,7 +9,7 @@ import Constants from "../../helpers/constants.js";
 
 const FieldText = (props: DraggableItem) => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const itemId = props.itemId;
+  const { itemId, index } = props;
 
   useEffect(() => {
     const cleanup = combine(
@@ -29,7 +29,7 @@ const FieldText = (props: DraggableItem) => {
   }, [itemId]);
 
   return (
-    <div className="p-[1.5rem]">
+    <div className="p-[1.5rem]" key={`${itemId}-${index}`}>
       <p className="text-[1rem] font-medium">Text Field</p>
       <div ref={ref}>
         <input

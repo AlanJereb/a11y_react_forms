@@ -11,9 +11,15 @@ const Sidebar = () => {
         "rounded-[2rem]",
         "shadow-[-10px_-10px_30px_0_#FFFFFF,10px_10px_30px_0_#AEAEC040]",
         "mb-[8rem]",
+        "select-none"
       ].join(" ")}
     >
-      <FieldText itemId={Constants.fieldTextFieldId} index={0} />
+      <FieldText
+        itemId={Constants.fieldTextFieldId}
+        index={0}
+        label="Text field"
+        disabled={true}
+      />
     </div>
   );
 };

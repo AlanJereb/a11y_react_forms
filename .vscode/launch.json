@@ -30,7 +30,7 @@
       // -----------------------------------------------------
       // Start vite dev server before launching Firefox
       // -----------------------------------------------------
-      "preLaunchTask": "npm: dev"
+      // "preLaunchTask": "npm: dev" // Optional: it is faster to start vite manually
       // -----------------------------------------------------
     },
   ]

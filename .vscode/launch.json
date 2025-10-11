@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Firefox: Debug Vite",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/src",
+      "reloadOnAttach": true,
+      "pathMappings": [
+        { "url": "http://localhost:5173/src", "path": "${workspaceFolder}/src" }
+      ],
+      // -----------------------------------------------------
+      // Skip files in node internals when stepping through code (debugging)
+      // -----------------------------------------------------
+      "skipFiles": ["<node_internals>/**"],
+      // -----------------------------------------------------
+      // Open with devtools opened and docked to the right
+      // -----------------------------------------------------
+      "firefoxArgs": ["-devtools"],
+      "preferences": {
+        "devtools.toolbox.host": "right"
+      },
+      // -----------------------------------------------------
+      // Save session data between debugging sessions
+      // -----------------------------------------------------
+      "profileDir": "${workspaceFolder}/.vscode/firefox-react-profile",
+      "keepProfileChanges": true,
+      // -----------------------------------------------------
+      // Start vite dev server before launching Firefox
+      // -----------------------------------------------------
+      "preLaunchTask": "npm: dev"
+      // -----------------------------------------------------
+    },
+  ]
+}

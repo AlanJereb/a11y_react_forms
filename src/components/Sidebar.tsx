@@ -15,13 +15,14 @@ const Sidebar = () => {
       ].join(" ")}
     >
       <FieldText
-        itemId={Constants.fieldTextFieldId}
+        id={Constants.fieldTypes.text}
+        fieldType={Constants.fieldTypes.text}
         index={0}
         label="Text field"
         disabled={true}
       />
     </div>
-  );
+  );  
 };
 
 export default Sidebar;

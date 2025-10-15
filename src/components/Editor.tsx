@@ -4,11 +4,13 @@ import FormCard from "./form/FormCard";
 import FormTitle from "./form/FormTitle";
 import Constants from "../helpers/constants";
 import FieldText from "./draggables/FieldText";
+import type { DraggableItem } from "../types/types";
+import { nanoid } from "nanoid";
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
-  const [droppedItems, setDroppedItems] = useState<string[]>([]);
+  const [droppedItems, setDroppedItems] = useState<Map<string, DraggableItem["fieldType"]>>(new Map());
 
   useEffect(() => {
     const cleanup = dropTargetForElements({
@@ -18,9 +20,9 @@ const Editor = () => {
       onDragLeave: () => setIsDraggedOver(false),
       onDrop: (args) => {
         setIsDraggedOver(false);
-        const itemId = args.source.data.itemId as string;
-        if (itemId) {
-          setDroppedItems((prev) => [...prev, itemId]);
+        const fieldType = args.source.data.fieldType as DraggableItem["fieldType"];
+        if (fieldType) {
+          setDroppedItems((prev) => new Map(prev).set(nanoid(), fieldType));
         }
       },
     });
@@ -29,10 +31,10 @@ const Editor = () => {
   }, []);
 
   // Renders the correct type of form element based on the dropped item ID
-  const renderFormElement = (itemId: string, index: number) => {
-    switch (itemId) {
-      case Constants.fieldTextFieldId:
-        return <FieldText itemId={itemId} index={index} />;
+  const renderFormElement = ({fieldType, id, index}: {fieldType: DraggableItem["fieldType"], id: string, index: number}) => {
+    switch (fieldType) {
+      case Constants.fieldTypes.text:
+        return <FieldText id={id} index={index} fieldType={fieldType} />;
       default:
         return null;
     }
@@ -54,7 +56,7 @@ const Editor = () => {
       ].join(" ")}
     >
       {/* Placeholder content when no fields are dropped */}
-      {droppedItems.length === 0 && !isDraggedOver ? (
+      {droppedItems.size === 0 && !isDraggedOver ? (
         <div
           className={[
             "text-placeholder",
@@ -71,18 +73,21 @@ const Editor = () => {
       ) : (
         <div>
           {/* Placeholder content when fields are being dragged over */}
-          {isDraggedOver && droppedItems.length === 0 && (
+          {isDraggedOver && droppedItems.size === 0 && (
             <FormCard>
               <FormTitle text="Release to add field" />
             </FormCard>
           )}
           {/* Render the dropped form elements */}
-          {droppedItems.length > 0 && (
+          {droppedItems.size > 0 && (
             <FormCard>
-              {droppedItems.map((itemId, index) => renderFormElement(itemId, index))}
+              {Array.from(droppedItems.entries()).map(([id, fieldType], index) => (
+                <React.Fragment key={id}>
+                  {renderFormElement({ fieldType, id, index })}
+                </React.Fragment>
+              ))}
             </FormCard>
-          )
-          }
+          )}
         </div>
       )}
     </div>

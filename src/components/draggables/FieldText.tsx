@@ -3,10 +3,10 @@ import type { DraggableItem, DraggableState } from "../../types/types.js";
 import FieldBase from "../form/FieldBase.js";
 
 const FieldText = (props: DraggableItem) => {
-  const { itemId, index, label, disabled } = props;
+  const { id, fieldType, index, label, disabled } = props;
 
   return (
-    <FieldBase itemId={itemId} index={index} label={label}>
+    <FieldBase id={id} fieldType={fieldType} index={index} label={label}>
       <input
         type="text"
         placeholder="Enter title"

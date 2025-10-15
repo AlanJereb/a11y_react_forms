@@ -11,8 +11,8 @@ interface FieldBaseProps extends DraggableItem {
 }
 
 const FieldBase: React.FC<FieldBaseProps> = ({
-  itemId,
-  index,
+  id,
+  fieldType,
   label,
   children,
 }) => {
@@ -25,15 +25,16 @@ const FieldBase: React.FC<FieldBaseProps> = ({
         element: ref.current!,
         getInitialData: () => ({
           type: Constants.fieldTypeCard,
-          itemId: itemId,
+          id: id,
+          fieldType: fieldType,
         }),
       }),
     );
     return cleanup;
-  }, [itemId]);
+  }, [id]);
 
   return (
-    <div ref={ref} className="p-[1.5rem]" key={`${itemId}-${index}`}>
+    <div ref={ref} className="p-[1.5rem]">
       {label && <p className="text-start text-[1rem] font-medium">{label}</p>}
       {children}
     </div>

@@ -12,9 +12,7 @@ const Editor = () => {
   const appContext = React.useContext(AppContext);
   const ref = useRef<HTMLDivElement | null>(null);
 
-  if (!appContext) {
-    return null;
-  }
+  if (!appContext) return null;
 
   useEffect(() => {
     const cleanup = dropTargetForElements({

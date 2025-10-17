@@ -5,6 +5,7 @@ import {
 import type { DraggableItem } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
+import { AppContext } from "../../App";
 
 interface FieldBaseProps extends DraggableItem {
   children?: React.ReactNode;
@@ -18,17 +19,31 @@ const FieldBase: React.FC<FieldBaseProps> = ({
   index,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const appContext = React.useContext(AppContext);
   const [isDragging, setIsDragging] = useState(false);
+
+  if (!appContext) return null;
 
   useEffect(() => {
     if (!ref.current) return;
     const cleanup = combine(
       draggable({
         element: ref.current!,
-        onDragStart: () => {
-          // TODO: modify add drop targets between editor elements, between all elements,
+        onDragStart: (args) => {
+          // ----------------------------------------------------------------------
+          // Add drop targets between editor elements, between all elements,
           // but the element on current index and one behind and one in front of it
-          // TODO: move editor state to the app context, so that you can access from both sidebar and editor
+          // ----------------------------------------------------------------------
+          appContext.setFormElements((prev) => {
+            const id = args.source.data.id as string;
+            // If the element we are dragging is from the sidebar
+            // we don't modify the current form elements
+            if (!prev.has(id)) return prev;
+
+            // TODO draw placeholders between elements
+            return prev;
+          });
+          // ----------------------------------------------------------------------
           setIsDragging(true)
         },
         onDrop: () => setIsDragging(false),

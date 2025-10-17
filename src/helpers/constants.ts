@@ -1,6 +1,8 @@
 class Constants {
-  // field draggable item IDs
-  static fieldTextFieldId = "fieldText";
+  static fieldTypes = {
+    text: "fieldText",
+    number: "fieldNumber",
+  }
   // field types
   static fieldTypeCard = "card";
 }

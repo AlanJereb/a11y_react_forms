@@ -4,23 +4,29 @@ import FormCard from "./form/FormCard";
 import FormTitle from "./form/FormTitle";
 import Constants from "../helpers/constants";
 import FieldText from "./draggables/FieldText";
+import type { DraggableItem } from "../types/types";
+import { nanoid } from "nanoid";
+import { AppContext } from "../App";
 
 const Editor = () => {
+  const appContext = React.useContext(AppContext);
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
-  const [droppedItems, setDroppedItems] = useState<string[]>([]);
+
+  if (!appContext) {
+    return null;
+  }
 
   useEffect(() => {
     const cleanup = dropTargetForElements({
       element: ref.current!,
       canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
-      onDragEnter: () => setIsDraggedOver(true),
-      onDragLeave: () => setIsDraggedOver(false),
+      onDragEnter: (args) => appContext.setDraggingElementId?.(args.source.data.id as string),
+      onDragLeave: () => appContext.setDraggingElementId?.(undefined),
       onDrop: (args) => {
-        setIsDraggedOver(false);
-        const itemId = args.source.data.itemId as string;
-        if (itemId) {
-          setDroppedItems((prev) => [...prev, itemId]);
+        appContext.setDraggingElementId?.(undefined);
+        const fieldType = args.source.data.fieldType as DraggableItem["fieldType"];
+        if (fieldType) {
+          appContext.setFormElements((prev) => new Map(prev).set(nanoid(), fieldType));
         }
       },
     });
@@ -29,10 +35,10 @@ const Editor = () => {
   }, []);
 
   // Renders the correct type of form element based on the dropped item ID
-  const renderFormElement = (itemId: string, index: number) => {
-    switch (itemId) {
-      case Constants.fieldTextFieldId:
-        return <FieldText itemId={itemId} index={index} />;
+  const renderFormElement = ({fieldType, id, index}: {fieldType: DraggableItem["fieldType"], id: string, index: number}) => {
+    switch (fieldType) {
+      case Constants.fieldTypes.text:
+        return <FieldText id={id} index={index} fieldType={fieldType} />;
       default:
         return null;
     }
@@ -54,7 +60,7 @@ const Editor = () => {
       ].join(" ")}
     >
       {/* Placeholder content when no fields are dropped */}
-      {droppedItems.length === 0 && !isDraggedOver ? (
+      {appContext.formElements.size === 0 && !appContext.draggingElementId ? (
         <div
           className={[
             "text-placeholder",
@@ -71,18 +77,21 @@ const Editor = () => {
       ) : (
         <div>
           {/* Placeholder content when fields are being dragged over */}
-          {isDraggedOver && droppedItems.length === 0 && (
+          {appContext.draggingElementId && appContext.formElements.size === 0 && (
             <FormCard>
               <FormTitle text="Release to add field" />
             </FormCard>
           )}
           {/* Render the dropped form elements */}
-          {droppedItems.length > 0 && (
+          {appContext.formElements.size > 0 && (
             <FormCard>
-              {droppedItems.map((itemId, index) => renderFormElement(itemId, index))}
+              {Array.from(appContext.formElements.entries()).map(([id, fieldType], index) => (
+                <React.Fragment key={id}>
+                  {renderFormElement({ fieldType, id, index })}
+                </React.Fragment>
+              ))}
             </FormCard>
-          )
-          }
+          )}
         </div>
       )}
     </div>

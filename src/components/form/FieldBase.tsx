@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   draggable
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
@@ -11,29 +11,39 @@ interface FieldBaseProps extends DraggableItem {
 }
 
 const FieldBase: React.FC<FieldBaseProps> = ({
-  itemId,
-  index,
+  id,
+  fieldType,
   label,
   children,
+  index,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (!ref.current) return;
     const cleanup = combine(
       draggable({
         element: ref.current!,
+        onDragStart: () => {
+          // TODO: modify add drop targets between editor elements, between all elements,
+          // but the element on current index and one behind and one in front of it
+          // TODO: move editor state to the app context, so that you can access from both sidebar and editor
+          setIsDragging(true)
+        },
+        onDrop: () => setIsDragging(false),
         getInitialData: () => ({
           type: Constants.fieldTypeCard,
-          itemId: itemId,
+          id: id,
+          fieldType: fieldType,
         }),
       }),
     );
     return cleanup;
-  }, [itemId]);
+  }, [id]);
 
   return (
-    <div ref={ref} className="p-[1.5rem]" key={`${itemId}-${index}`}>
+    <div ref={ref} className={`p-[1.5rem] hover:cursor-grab ${isDragging ? "opacity-40" : ""}`}>
       {label && <p className="text-start text-[1rem] font-medium">{label}</p>}
       {children}
     </div>

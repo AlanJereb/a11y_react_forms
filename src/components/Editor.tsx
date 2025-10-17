@@ -6,23 +6,27 @@ import Constants from "../helpers/constants";
 import FieldText from "./draggables/FieldText";
 import type { DraggableItem } from "../types/types";
 import { nanoid } from "nanoid";
+import { AppContext } from "../App";
 
 const Editor = () => {
+  const appContext = React.useContext(AppContext);
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
-  const [droppedItems, setDroppedItems] = useState<Map<string, DraggableItem["fieldType"]>>(new Map());
+
+  if (!appContext) {
+    return null;
+  }
 
   useEffect(() => {
     const cleanup = dropTargetForElements({
       element: ref.current!,
       canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
-      onDragEnter: () => setIsDraggedOver(true),
-      onDragLeave: () => setIsDraggedOver(false),
+      onDragEnter: (args) => appContext.setDraggingElementId?.(args.source.data.id as string),
+      onDragLeave: () => appContext.setDraggingElementId?.(undefined),
       onDrop: (args) => {
-        setIsDraggedOver(false);
+        appContext.setDraggingElementId?.(undefined);
         const fieldType = args.source.data.fieldType as DraggableItem["fieldType"];
         if (fieldType) {
-          setDroppedItems((prev) => new Map(prev).set(nanoid(), fieldType));
+          appContext.setFormElements((prev) => new Map(prev).set(nanoid(), fieldType));
         }
       },
     });
@@ -56,7 +60,7 @@ const Editor = () => {
       ].join(" ")}
     >
       {/* Placeholder content when no fields are dropped */}
-      {droppedItems.size === 0 && !isDraggedOver ? (
+      {appContext.formElements.size === 0 && !appContext.draggingElementId ? (
         <div
           className={[
             "text-placeholder",
@@ -73,15 +77,15 @@ const Editor = () => {
       ) : (
         <div>
           {/* Placeholder content when fields are being dragged over */}
-          {isDraggedOver && droppedItems.size === 0 && (
+          {appContext.draggingElementId && appContext.formElements.size === 0 && (
             <FormCard>
               <FormTitle text="Release to add field" />
             </FormCard>
           )}
           {/* Render the dropped form elements */}
-          {droppedItems.size > 0 && (
+          {appContext.formElements.size > 0 && (
             <FormCard>
-              {Array.from(droppedItems.entries()).map(([id, fieldType], index) => (
+              {Array.from(appContext.formElements.entries()).map(([id, fieldType], index) => (
                 <React.Fragment key={id}>
                   {renderFormElement({ fieldType, id, index })}
                 </React.Fragment>

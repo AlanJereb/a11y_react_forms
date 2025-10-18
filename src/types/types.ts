@@ -10,4 +10,12 @@ export type DraggableItem = {
 
 export type DraggableState = "idle" | "preview" | "dragging";
 
-type FieldType = typeof Constants.fieldTypes[keyof typeof Constants.fieldTypes];
+type FieldType =
+  (typeof Constants.fieldTypes)[keyof typeof Constants.fieldTypes];
+
+type FormElements = {
+  id: string;
+  fieldType: DraggableItem["fieldType"];
+};
+
+export type { FieldType, FormElements };

@@ -7,6 +7,7 @@ import FieldText from "./draggables/FieldText";
 import type { DraggableItem } from "../types/types";
 import { nanoid } from "nanoid";
 import { AppContext } from "../App";
+import { findElementIndexes } from "../helpers/formHelpers";
 
 const Editor = () => {
   const appContext = React.useContext(AppContext);
@@ -18,13 +19,32 @@ const Editor = () => {
     const cleanup = dropTargetForElements({
       element: ref.current!,
       canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
-      onDragEnter: (args) => appContext.setDraggingElementId?.(args.source.data.id as string),
+      onDragEnter: (args) =>
+        appContext.setDraggingElementId?.(args.source.data.id as string),
       onDragLeave: () => appContext.setDraggingElementId?.(undefined),
       onDrop: (args) => {
         appContext.setDraggingElementId?.(undefined);
-        const fieldType = args.source.data.fieldType as DraggableItem["fieldType"];
+        const fieldType = args.source.data
+          .fieldType as DraggableItem["fieldType"];
+        const id = args.source.data.id as string;
         if (fieldType) {
-          appContext.setFormElements((prev) => new Map(prev).set(nanoid(), fieldType));
+          // appContext.setFormElements((prev) => ({ ...prev, [nanoid()]: fieldType }));
+          const indexes = findElementIndexes(id, appContext.formElements);
+          appContext.setFormElements((prev) => {
+            const newFormElements = { ...prev };
+            // If the dragged element is from the sidebar (not already in form elements)
+            if (indexes.row === -1 && indexes.col === -1) {
+              newFormElements[0]![0] = { id: nanoid(), fieldType };
+            }
+            if (indexes.row !== -1 && indexes.col !== -1) {
+              // FIXME: temporary add it to a new row
+              newFormElements[Object.keys(newFormElements).length]![0] = {
+                id: nanoid(),
+                fieldType,
+              };
+            }
+            return newFormElements;
+          });
         }
       },
     });
@@ -33,7 +53,15 @@ const Editor = () => {
   }, []);
 
   // Renders the correct type of form element based on the dropped item ID
-  const renderFormElement = ({fieldType, id, index}: {fieldType: DraggableItem["fieldType"], id: string, index: number}) => {
+  const renderFormElement = ({
+    fieldType,
+    id,
+    index,
+  }: {
+    fieldType: DraggableItem["fieldType"];
+    id: string;
+    index: number;
+  }) => {
     switch (fieldType) {
       case Constants.fieldTypes.text:
         return <FieldText id={id} index={index} fieldType={fieldType} />;
@@ -58,7 +86,8 @@ const Editor = () => {
       ].join(" ")}
     >
       {/* Placeholder content when no fields are dropped */}
-      {appContext.formElements.size === 0 && !appContext.draggingElementId ? (
+      {Object.keys(appContext.formElements).length === 0 &&
+      !appContext.draggingElementId ? (
         <div
           className={[
             "text-placeholder",
@@ -75,19 +104,22 @@ const Editor = () => {
       ) : (
         <div>
           {/* Placeholder content when fields are being dragged over */}
-          {appContext.draggingElementId && appContext.formElements.size === 0 && (
-            <FormCard>
-              <FormTitle text="Release to add field" />
-            </FormCard>
-          )}
+          {appContext.draggingElementId &&
+            Object.keys(appContext.formElements).length === 0 && (
+              <FormCard>
+                <FormTitle text="Release to add field" />
+              </FormCard>
+            )}
           {/* Render the dropped form elements */}
-          {appContext.formElements.size > 0 && (
+          {Object.keys(appContext.formElements).length > 0 && (
             <FormCard>
-              {Array.from(appContext.formElements.entries()).map(([id, fieldType], index) => (
-                <React.Fragment key={id}>
-                  {renderFormElement({ fieldType, id, index })}
-                </React.Fragment>
-              ))}
+              {Object.entries(appContext.formElements).map(
+                ([id, fieldType], index) => (
+                  <React.Fragment key={id}>
+                    {renderFormElement({ fieldType, id, index })}
+                  </React.Fragment>
+                ),
+              )}
             </FormCard>
           )}
         </div>

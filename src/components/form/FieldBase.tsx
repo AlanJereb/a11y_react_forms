@@ -38,15 +38,37 @@ const FieldBase: React.FC<FieldBaseProps> = ({
             const id = args.source.data.id as string;
             // If the element we are dragging is from the sidebar
             // we don't modify the current form elements
-            if (!prev.has(id)) return prev;
+            if (!prev[id]) return prev;
 
-            // TODO draw placeholders between elements
-            return prev;
+            // Draw placeholders between elements
+            const newFormElements = { ...prev };
+            let i = 0;
+            Object.keys(prev).forEach((key) => {
+              // Add placeholder before the current index
+              if (i === index && i !== 0) {
+                newFormElements[`placeholder-${id}-${i - 1}`] = Constants.fieldTypes.placeholder;
+              }
+              newFormElements[key] = prev[key]!;
+              i++;
+            });
+            return newFormElements;
           });
           // ----------------------------------------------------------------------
           setIsDragging(true)
         },
-        onDrop: () => setIsDragging(false),
+        onDrop: () => {
+          // remove all placeholders after drop
+          appContext.setFormElements((prev) => {
+            const newFormElements = { ...prev };
+            Object.keys(prev).forEach((key) => {
+              if (!key.startsWith("placeholder-")) {
+                newFormElements[key] = prev[key]!;
+              }
+            });
+            return newFormElements;
+          });
+          setIsDragging(false);
+        },
         getInitialData: () => ({
           type: Constants.fieldTypeCard,
           id: id,

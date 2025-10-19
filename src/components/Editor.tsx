@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import FormCard from "./form/FormCard";
 import FormTitle from "./form/FormTitle";
@@ -7,7 +7,11 @@ import FieldText from "./draggables/FieldText";
 import type { DraggableItem } from "../types/types";
 import { nanoid } from "nanoid";
 import { AppContext } from "../App";
-import { findElementIndexes } from "../helpers/formHelpers";
+import {
+  areAllElementsEmpty,
+  findElementIndexes,
+} from "../helpers/formHelpers";
+import FormRow from "./form/FormRow";
 
 const Editor = () => {
   const appContext = React.useContext(AppContext);
@@ -27,21 +31,24 @@ const Editor = () => {
         const fieldType = args.source.data
           .fieldType as DraggableItem["fieldType"];
         const id = args.source.data.id as string;
-        if (fieldType) {
+        if (fieldType && id) {
           // appContext.setFormElements((prev) => ({ ...prev, [nanoid()]: fieldType }));
           const indexes = findElementIndexes(id, appContext.formElements);
           appContext.setFormElements((prev) => {
-            const newFormElements = { ...prev };
+            // copy the previous form element array
+            const newFormElements = [...prev];
+
             // If the dragged element is from the sidebar (not already in form elements)
             if (indexes.row === -1 && indexes.col === -1) {
               newFormElements[0]![0] = { id: nanoid(), fieldType };
             }
+            
             if (indexes.row !== -1 && indexes.col !== -1) {
               // FIXME: temporary add it to a new row
-              newFormElements[Object.keys(newFormElements).length]![0] = {
+              newFormElements[indexes.row + 1] = [{
                 id: nanoid(),
                 fieldType,
-              };
+              }];
             }
             return newFormElements;
           });
@@ -52,23 +59,6 @@ const Editor = () => {
     return cleanup;
   }, []);
 
-  // Renders the correct type of form element based on the dropped item ID
-  const renderFormElement = ({
-    fieldType,
-    id,
-    index,
-  }: {
-    fieldType: DraggableItem["fieldType"];
-    id: string;
-    index: number;
-  }) => {
-    switch (fieldType) {
-      case Constants.fieldTypes.text:
-        return <FieldText id={id} index={index} fieldType={fieldType} />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <div
@@ -86,7 +76,7 @@ const Editor = () => {
       ].join(" ")}
     >
       {/* Placeholder content when no fields are dropped */}
-      {Object.keys(appContext.formElements).length === 0 &&
+      {areAllElementsEmpty(appContext.formElements) &&
       !appContext.draggingElementId ? (
         <div
           className={[
@@ -105,21 +95,19 @@ const Editor = () => {
         <div>
           {/* Placeholder content when fields are being dragged over */}
           {appContext.draggingElementId &&
-            Object.keys(appContext.formElements).length === 0 && (
+            areAllElementsEmpty(appContext.formElements) && (
               <FormCard>
                 <FormTitle text="Release to add field" />
               </FormCard>
             )}
           {/* Render the dropped form elements */}
-          {Object.keys(appContext.formElements).length > 0 && (
+          {!areAllElementsEmpty(appContext.formElements) && (
             <FormCard>
-              {Object.entries(appContext.formElements).map(
-                ([id, fieldType], index) => (
-                  <React.Fragment key={id}>
-                    {renderFormElement({ fieldType, id, index })}
-                  </React.Fragment>
-                ),
-              )}
+              {appContext.formElements.map((_, rowIndex) => (
+                <React.Fragment key={rowIndex}>
+                  <FormRow rowIndex={rowIndex} />
+                </React.Fragment>
+              ))}
             </FormCard>
           )}
         </div>

@@ -6,6 +6,7 @@ import type { DraggableItem } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
 import { AppContext } from "../../App";
+import { findElementIndexes } from "../../helpers/formHelpers";
 
 interface FieldBaseProps extends DraggableItem {
   children?: React.ReactNode;
@@ -38,20 +39,21 @@ const FieldBase: React.FC<FieldBaseProps> = ({
             const id = args.source.data.id as string;
             // If the element we are dragging is from the sidebar
             // we don't modify the current form elements
-            if (!prev[id]) return prev;
+            const elementIndexes = findElementIndexes(id, prev);
+            if (elementIndexes.row === -1 && elementIndexes.col === -1) return prev;
 
             // Draw placeholders between elements
-            const newFormElements = { ...prev };
-            let i = 0;
-            Object.keys(prev).forEach((key) => {
-              // Add placeholder before the current index
-              if (i === index && i !== 0) {
-                newFormElements[`placeholder-${id}-${i - 1}`] = Constants.fieldTypes.placeholder;
-              }
-              newFormElements[key] = prev[key]!;
-              i++;
-            });
-            return newFormElements;
+            // const newFormElements = { ...prev };
+            // let i = 0;
+            // Object.keys(prev).forEach((key) => {
+            //   // Add placeholder before the current index
+            //   if (i === index && i !== 0) {
+            //     newFormElements[`placeholder-${id}-${i - 1}`] = Constants.fieldTypes.placeholder;
+            //   }
+            //   newFormElements[key] = prev[key]!;
+            //   i++;
+            // });
+            return prev;
           });
           // ----------------------------------------------------------------------
           setIsDragging(true)
@@ -59,13 +61,14 @@ const FieldBase: React.FC<FieldBaseProps> = ({
         onDrop: () => {
           // remove all placeholders after drop
           appContext.setFormElements((prev) => {
-            const newFormElements = { ...prev };
-            Object.keys(prev).forEach((key) => {
-              if (!key.startsWith("placeholder-")) {
-                newFormElements[key] = prev[key]!;
-              }
-            });
-            return newFormElements;
+            // const newFormElements = { ...prev };
+            // Object.keys(prev).forEach((key) => {
+            //   if (!key.startsWith("placeholder-")) {
+            //     newFormElements[key] = prev[key]!;
+            //   }
+            // });
+            // return newFormElements;
+            return prev;
           });
           setIsDragging(false);
         },

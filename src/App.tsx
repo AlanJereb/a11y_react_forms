@@ -3,7 +3,7 @@ import { Editor, Sidebar } from "./components/_all";
 import type { FormElements } from "./types/types";
 import "./styles.css";
 
-interface AppContextType {
+export interface AppContextType {
   formElements: FormElements[][];
   setFormElements: React.Dispatch<React.SetStateAction<FormElements[][]>>;
   draggingElementId?: string;

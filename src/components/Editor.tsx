@@ -40,15 +40,30 @@ const Editor = () => {
 
             // If the dragged element is from the sidebar (not already in form elements)
             if (indexes.row === -1 && indexes.col === -1) {
-              newFormElements[0]![0] = { id: nanoid(), fieldType };
+              // add a new row to base state [[]]
+              if (newFormElements.length === 0) {
+                newFormElements[0]![0] = { id: nanoid(), fieldType };
+              } else {
+                // FIXME: temporary add a new element to the last row
+                newFormElements.push([
+                  {
+                    id: nanoid(),
+                    fieldType,
+                  },
+                ]);
+              }
             }
-            
+
             if (indexes.row !== -1 && indexes.col !== -1) {
-              // FIXME: temporary add it to a new row
-              newFormElements[indexes.row + 1] = [{
-                id: nanoid(),
-                fieldType,
-              }];
+              // FIXME: emporary add it to the last row
+              if (indexes.row + 1 >= newFormElements.length) {
+                newFormElements.push([
+                  {
+                    id: nanoid(),
+                    fieldType,
+                  },
+                ]);
+              }
             }
             return newFormElements;
           });
@@ -58,7 +73,6 @@ const Editor = () => {
 
     return cleanup;
   }, []);
-
 
   return (
     <div

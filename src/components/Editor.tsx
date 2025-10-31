@@ -3,7 +3,6 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 import FormCard from "./form/FormCard";
 import FormTitle from "./form/FormTitle";
 import Constants from "../helpers/constants";
-import FieldText from "./draggables/FieldText";
 import type { DraggableItem } from "../types/types";
 import { nanoid } from "nanoid";
 import { AppContext } from "../App";

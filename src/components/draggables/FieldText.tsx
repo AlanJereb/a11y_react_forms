@@ -9,19 +9,9 @@ const FieldText = (props: DraggableItem) => {
     <FieldBase id={id} fieldType={fieldType} index={index} label={label}>
       <input
         type="text"
+        // TODO localization
         placeholder="Enter title"
-        className={[
-          "bg-background",
-          "w-full",
-          "rounded-[1rem]",
-          "border-none",
-          "p-[10px]",
-          "hover:cursor-grab",
-          "text-[20px]",
-          "font-medium",
-          "inset-shadow-[-5px_-5px_10px_0_#FFFFFF70,5px_5px_10px_0_#AEAEC020]",
-          "outline-none",
-        ].join(" ")}
+        className="field-text"
         disabled={disabled}
       />
     </FieldBase>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Editor, Sidebar } from "./components/_all";
 import type { FormElements } from "./types/types";
-import "./styles.css";
 
 export interface AppContextType {
   formElements: FormElements[][];
@@ -28,7 +27,7 @@ function App() {
         setDraggingElementId,
       }}
     >
-      <div className="bg-background flex h-screen w-screen gap-x-[4rem] px-[8rem] pt-[8rem]">
+      <div className="app">
         <Sidebar />
         <Editor />
       </div>

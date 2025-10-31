@@ -103,22 +103,13 @@ const FieldBase: React.FC<FieldBaseProps> = ({
   return (
     <div
       ref={ref}
-      className={[
-        "p-[1.5rem]",
-        "hover:cursor-grab",
-        isDragging ? "opacity-40" : "",
-        "relative",
-      ].join(" ")}
+      className={["field-base", isDragging ? "is-dragging" : ""].join(" ")}
     >
       <FieldDropzone position="top" fieldWidth={fieldWidth} />
       <FieldDropzone position="right" fieldWidth={fieldWidth} />
       <FieldDropzone position="bottom" fieldWidth={fieldWidth} />
       <FieldDropzone position="left" fieldWidth={fieldWidth} />
-      {label && (
-        <p className="absolute top-0 left-[1.5rem] text-start text-[1rem] font-medium">
-          {label}
-        </p>
-      )}
+      {label && <p className="field-base-label">{label}</p>}
       {children}
     </div>
   );

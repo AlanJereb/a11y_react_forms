@@ -1,0 +1,30 @@
+@use "../../variables" as *;
+
+$base_dimension: 1.5rem;
+
+.field-dropzone {
+  background-color: red;
+  position: absolute;
+  &.top {
+    height: $base_dimension;
+    width: calc(100% - 2 * $base_dimension);
+    left: $base_dimension;
+    bottom: calc(50px + 1.5rem);
+  }
+  &.right {
+    height: calc(100% - 2 * $base_dimension);
+    width: $base_dimension;
+    top: $base_dimension;
+  }
+  &.bottom {
+    height: $base_dimension;
+    width: calc(100% - 2 * $base_dimension);
+    left: $base_dimension;
+    top: calc(50px + 1.5rem);
+  }
+  &.left {
+    height: calc(100% - 2 * $base_dimension);
+    width: $base_dimension;
+    top: $base_dimension;
+  }
+}

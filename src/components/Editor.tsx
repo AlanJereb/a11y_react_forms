@@ -74,35 +74,13 @@ const Editor = () => {
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className={[
-        "min-h-[400px]",
-        "flex-7/10",
-        "place-content-center",
-        "rounded-t-[2rem]",
-        "p-[2rem]",
-        "inset-shadow-[-10px_-10px_10px_0_#FFFFFF70,10px_10px_10px_0_#AEAEC020]",
-        "transition-all",
-        "duration-200",
-        "overflow-y-auto",
-      ].join(" ")}
-    >
+    <div ref={ref} className="component-editor">
       {/* Placeholder content when no fields are dropped */}
       {areAllElementsEmpty(appContext.formElements) &&
       !appContext.draggingElementId ? (
-        <div
-          className={[
-            "text-placeholder",
-            "flex",
-            "h-full",
-            "items-center",
-            "justify-center",
-          ].join(" ")}
-        >
-          <p className="text-[1.2rem]">
-            Drop form fields here to build your form
-          </p>
+        <div className="text-placeholder">
+          {/* TODO Localization */}
+          <p>{"Drop form fields here to build your form"}</p>
         </div>
       ) : (
         <div>

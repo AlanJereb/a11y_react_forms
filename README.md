@@ -13,6 +13,6 @@ Most form builders ignore accessibility. This tool ensures WCAG-compliant forms 
 
 ## 🔧 Tech Stack
 - React + Vite
-- TailwindCSS (styling)
+- SCSS (styling)
 - pragmatic-drag-and-drop (drag & drop)
 - axe-core (a11y auditing)

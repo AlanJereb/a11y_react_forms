@@ -1,0 +1,20 @@
+@use "../../variables" as *;
+
+.field-base {
+  padding: 1.5rem;
+  :hover {
+    cursor: grab;
+  }
+  &.is-dragging {
+    opacity: 0.4;
+  }
+  position: relative;
+  p.field-base-label {
+    position: absolute;
+    top: 0;
+    left: 1.5rem;
+    text-align: start;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+}

@@ -1,0 +1,12 @@
+@use "../variables" as *;
+
+.component-sidebar {
+  flex: 3;
+  max-width: 450px;
+  border-radius: 2rem;
+  box-shadow:
+    -10px -10px 30px 0 $color_shadow_light,
+    10px 10px 30px 0 rgba($color_shadow_dark, .4);
+  margin-bottom: 8rem;
+  user-select: none;
+}

@@ -17,7 +17,8 @@ const FieldBase: React.FC<FieldBaseProps> = ({
   fieldType,
   label,
   children,
-  index,
+  row,
+  col,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [fieldWidth, setFieldWidth] = useState(0);
@@ -107,10 +108,10 @@ const FieldBase: React.FC<FieldBaseProps> = ({
     >
       {!Object.values(Constants.fieldTypes).includes(id as string) && (
         <>
-          <FieldDropzone position="top" fieldWidth={fieldWidth} />
-          <FieldDropzone position="right" fieldWidth={fieldWidth} />
-          <FieldDropzone position="bottom" fieldWidth={fieldWidth} />
-          <FieldDropzone position="left" fieldWidth={fieldWidth} />
+          <FieldDropzone position="top" fieldWidth={fieldWidth} row={row} col={col} />
+          <FieldDropzone position="right" fieldWidth={fieldWidth} row={row} col={col} />
+          <FieldDropzone position="bottom" fieldWidth={fieldWidth} row={row} col={col} />
+          <FieldDropzone position="left" fieldWidth={fieldWidth} row={row} col={col} />
         </>
       )}
       {label && <p className="field-base-label">{label}</p>}

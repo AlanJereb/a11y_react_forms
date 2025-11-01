@@ -3,7 +3,8 @@ import Constants from "../helpers/constants";
 export type DraggableItem = {
   id: string;
   fieldType: FieldType;
-  index: number;
+  row: number;
+  col: number;
   label?: string;
   disabled?: boolean;
 };

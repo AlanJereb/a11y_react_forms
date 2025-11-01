@@ -2,7 +2,7 @@ class Constants {
   static fieldTypes = {
     text: "fieldText",
     number: "fieldNumber",
-    placeholder: "placeholder",
+    placeholder: "fieldPlaceholder",
   }
   // field types
   static fieldTypeCard = "card";

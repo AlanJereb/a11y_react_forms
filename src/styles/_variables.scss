@@ -5,3 +5,20 @@ $color_shadow_light: #FFFFFF;
 $color_shadow_dark: #AEAEC0;
 // Card  colors
 $color_card_background: #FAFAFA;
+
+
+%field_base {
+  background-color: $color_background;
+  width: 100%;
+  border-radius: 1rem;
+  border: none;
+  padding: 13px;
+  :hover {
+    cursor: grab;
+  }
+  font-size: 20px;
+  font-weight: 500;
+  box-shadow: inset -5px -5px 10px rgba($color_shadow_light, 0.7),
+    inset 5px 5px 10px rgba($color_shadow_dark, 0.2);
+  outline: none;
+}

@@ -8,7 +8,8 @@ const Sidebar = () => {
       <FieldText
         id={Constants.fieldTypes.text}
         fieldType={Constants.fieldTypes.text}
-        index={0}
+        row={0}
+        col={0}
         label="Text field"
         disabled={true}
       />

@@ -1,0 +1,9 @@
+@use "../../variables" as *;
+
+.component-form-field-placeholder {
+  @extend %field_base;
+  min-height: 50px;
+  &.is-hovered {
+    background-color: $color_placeholder;
+  }
+}

@@ -1,34 +1,36 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import type { DraggableItem } from "../../types/types.js";
 import FieldBase from "../form/FieldBase.js";
-import { nanoid } from "nanoid";
 import Constants from "../../helpers/constants.js";
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 
-const FieldPlaceholder = (props: Pick<DraggableItem, "index">) => {
-  const { index } = props;
+
+const FieldPlaceholder = (props: Pick<DraggableItem, "row" | "col">) => {
+  const { row, col } = props;
+  const ref = useRef<HTMLDivElement | null>(null);
+  const isHovered = "is-hovered";
+
+  useEffect(() => { 
+    return dropTargetForElements({
+      element: ref.current!,
+      onDragEnter: (_) => {
+        ref.current?.classList.add(isHovered);
+      },
+      onDragLeave: (_) => {
+        ref.current?.classList.remove(isHovered);
+      },
+    });
+  }, []);
 
   return (
-    <></>
-    // <FieldBase
-    //   id={nanoid()}
-    //   fieldType={Constants.fieldTypes.placeholder}
-    //   index={index}
-    // >
-    //   <div
-    //     className={[
-    //       "bg-background",
-    //       "w-full",
-    //       "rounded-[1rem]",
-    //       "border-none",
-    //       "p-[1.2rem]",
-    //       "text-[1.4rem]",
-    //       "font-medium",
-    //       "inset-shadow-[-5px_-5px_10px_0_#FFFFFF70,5px_5px_10px_0_#AEAEC020]",
-    //       "outline-none",
-    //       "hover:cursor-grab",
-    //     ].join(" ")}
-    //   />
-    // </FieldBase>
+    <FieldBase
+      id={Constants.fieldTypes.placeholder}
+      fieldType={Constants.fieldTypes.placeholder}
+      row={row}
+      col={col}
+    >
+      <div ref={ref} className="component-form-field-placeholder" />
+    </FieldBase>
   );
 };
 

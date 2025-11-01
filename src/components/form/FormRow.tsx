@@ -15,7 +15,7 @@ const FormRow = ({ rowIndex }: FormRowProps) => {
 
   return rowElements.map(({ fieldType, id }, index) => (
     <React.Fragment key={id}>
-      <FormElement fieldType={fieldType} id={id} index={index} />
+      <FormElement fieldType={fieldType} id={id} col={index} row={rowIndex} />
     </React.Fragment>
   ));
 };

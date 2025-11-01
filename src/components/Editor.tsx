@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import FormCard from "./form/FormCard";
-import FormTitle from "./form/FormTitle";
 import Constants from "../helpers/constants";
 import type { DraggableItem } from "../types/types";
 import { nanoid } from "nanoid";
@@ -11,6 +10,7 @@ import {
   findElementIndexes,
 } from "../helpers/formHelpers";
 import FormRow from "./form/FormRow";
+import FieldPlaceholder from "./form/FieldPlaceholder";
 
 const Editor = () => {
   const appContext = React.useContext(AppContext);
@@ -19,7 +19,7 @@ const Editor = () => {
   if (!appContext) return null;
 
   useEffect(() => {
-    const cleanup = dropTargetForElements({
+    return dropTargetForElements({
       element: ref.current!,
       canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
       onDragEnter: (args) =>
@@ -69,8 +69,6 @@ const Editor = () => {
         }
       },
     });
-
-    return cleanup;
   }, []);
 
   return (
@@ -88,7 +86,7 @@ const Editor = () => {
           {appContext.draggingElementId &&
             areAllElementsEmpty(appContext.formElements) && (
               <FormCard>
-                <FormTitle text="Release to add field" />
+                <FieldPlaceholder row={0} col={0} />
               </FormCard>
             )}
           {/* Render the dropped form elements */}

@@ -3,10 +3,10 @@ import type { DraggableItem } from "../../types/types.js";
 import FieldBase from "../form/FieldBase.js";
 
 const FieldText = (props: DraggableItem) => {
-  const { id, fieldType, index, label, disabled } = props;
+  const { id, fieldType, col, row, label, disabled } = props;
 
   return (
-    <FieldBase id={id} fieldType={fieldType} index={index} label={label}>
+    <FieldBase id={id} fieldType={fieldType} col={col} row={row} label={label}>
       <input
         type="text"
         // TODO localization

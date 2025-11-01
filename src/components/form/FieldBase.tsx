@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import type { DraggableItem } from "../../types/types";
+import type { DraggableItem, FieldType } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
 import { AppContext } from "../../App";
@@ -105,10 +105,14 @@ const FieldBase: React.FC<FieldBaseProps> = ({
       ref={ref}
       className={["field-base", isDragging ? "is-dragging" : ""].join(" ")}
     >
-      <FieldDropzone position="top" fieldWidth={fieldWidth} />
-      <FieldDropzone position="right" fieldWidth={fieldWidth} />
-      <FieldDropzone position="bottom" fieldWidth={fieldWidth} />
-      <FieldDropzone position="left" fieldWidth={fieldWidth} />
+      {!Object.values(Constants.fieldTypes).includes(id as string) && (
+        <>
+          <FieldDropzone position="top" fieldWidth={fieldWidth} />
+          <FieldDropzone position="right" fieldWidth={fieldWidth} />
+          <FieldDropzone position="bottom" fieldWidth={fieldWidth} />
+          <FieldDropzone position="left" fieldWidth={fieldWidth} />
+        </>
+      )}
       {label && <p className="field-base-label">{label}</p>}
       {children}
     </div>

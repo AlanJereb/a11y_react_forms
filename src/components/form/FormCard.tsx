@@ -1,6 +1,6 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 
-const FormCard = ({ children }: { children: React.ReactNode }) => {
+const FormCard = ({ children }: { children: ReactNode }) => {
   return <div className="components-form-form_card">{children}</div>;
 };
 

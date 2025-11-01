@@ -1,6 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import Constants from "../../helpers/constants";
+import {
+  insertElementAt,
+  removePlaceholderFormElement,
+} from "../../helpers/formHelpers";
+import type { FormElements } from "../../types/types";
+import { AppContext } from "../../contexts/AppContextProvider";
 
 interface FieldDropzoneProps {
   position: "top" | "right" | "bottom" | "left";
@@ -9,30 +15,64 @@ interface FieldDropzoneProps {
   col: number;
 }
 
+const placeholderFormElement: FormElements = {
+  fieldType: Constants.fieldTypes.placeholder,
+  id: Constants.fieldTypes.placeholder,
+};
+
 const FieldDropzone = ({
   position,
   fieldWidth,
   row,
   col,
 }: FieldDropzoneProps) => {
-  const [isHovering, setIsHovering] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const appContext = useContext(AppContext);
+  const ref = useRef<HTMLDivElement>(null);
   const expandedHeight = "calc(50px + 3rem)";
   const expandedWidth = `calc(${fieldWidth}px - 1.5rem)`; // -1.5rem deletes one padding ...max 2 columns per form
+  const placeholderAddedRef = useRef(false);
+
+  if (!appContext) return null;
+
+  const removePlaceholders = () => {
+    setIsHovering(false);
+    placeholderAddedRef.current = false;
+    console.log("dragLeave");
+    appContext.setFormElements((prev) => removePlaceholderFormElement(prev));
+  };
 
   useEffect(() => {
     return dropTargetForElements({
       element: ref.current!,
-      canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
       onDragEnter: (_) => {
         setIsHovering(true);
+        if (!placeholderAddedRef.current) {
+          appContext.setFormElements((prev) => {
+            const hasPlaceholder = prev.some((r) =>
+              r.some((e) => e.id === Constants.fieldTypes.placeholder),
+            );
+            console.log(`dragEnter ${placeholderAddedRef.current}`);
+            console.log(`hasPlaceholder ${hasPlaceholder}`);
+            if (hasPlaceholder) {
+              return prev; // do nothing if one already exists
+            }
+            placeholderAddedRef.current = true;
+            return insertElementAt({
+              element: placeholderFormElement,
+              formElements: prev,
+              row,
+              col,
+              placeTo:
+                position === "top" || position === "left" ? "before" : "after",
+              destinationType:
+                position === "left" || position === "right" ? "col" : "row",
+            });
+          });
+        }
       },
-      onDragLeave: (_) => {
-        setIsHovering(false);
-      },
-      onDrop: (args) => {
-        // TODO move logic from Editor to here
-      },
+      onDragLeave: (_) => removePlaceholders(),
+      onDrop: (_) => removePlaceholders(),
     });
   }, []);
 

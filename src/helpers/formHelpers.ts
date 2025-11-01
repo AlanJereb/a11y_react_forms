@@ -1,18 +1,5 @@
 import type { FormElements } from "../types/types";
-
-const findElementIndexes = (
-  id: string,
-  formElements: FormElements[][],
-): { row: number; col: number } => {
-  for (let row = 0; row < formElements.length; row++) {
-    for (let col = 0; col < formElements[row]!.length; col++) {
-      if (formElements[row]![col]!.id === id) {
-        return { row, col };
-      }
-    }
-  }
-  return { row: -1, col: -1 };
-};
+import Constants from "./constants";
 
 const areAllElementsEmpty = (formElements: FormElements[][]): boolean => {
   for (let row = 0; row < formElements.length; row++) {
@@ -23,5 +10,37 @@ const areAllElementsEmpty = (formElements: FormElements[][]): boolean => {
   return true;
 };
 
-export { findElementIndexes, areAllElementsEmpty };
+const insertElementAt = ({
+  element,
+  formElements,
+  row,
+  col,
+  placeTo,
+  destinationType,
+}: {
+  element: FormElements;
+  formElements: FormElements[][];
+  row: number;
+  col: number;
+  placeTo: "before" | "after";
+  destinationType: "row" | "col";
+}) => {
+  const newFormElements = [...formElements];
+  if (destinationType === "row") {
+    const insertIndex = placeTo === "before" ? row : row + 1;
+    newFormElements.splice(insertIndex, 0, [element]);
+  } else {
+    const insertIndex = placeTo === "before" ? col : col + 1;
+    newFormElements[row]?.splice(insertIndex, 0, element);
+  }
+  return newFormElements;
+};
 
+const removePlaceholderFormElement = (formElements: FormElements[][]) => {
+  const newFormElements = formElements.map((row) =>
+    row.filter((e) => Constants.fieldTypes.placeholder !== e.id),
+  );
+  return newFormElements;
+};
+
+export { areAllElementsEmpty, insertElementAt, removePlaceholderFormElement };

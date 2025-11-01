@@ -1,18 +1,25 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from "react";
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import type { DraggableItem, FieldType } from "../../types/types";
+import type { DraggableItem } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
-import { AppContext } from "../../App";
-import { findElementIndexes } from "../../helpers/formHelpers";
 import { nanoid } from "nanoid";
 import FieldDropzone from "./FieldDropzone";
+import { AppContext } from "../../contexts/AppContextProvider";
 
 interface FieldBaseProps extends DraggableItem {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-const FieldBase: React.FC<FieldBaseProps> = ({
+const FieldBase: FC<FieldBaseProps> = ({
   id,
   fieldType,
   label,
@@ -21,8 +28,8 @@ const FieldBase: React.FC<FieldBaseProps> = ({
   col,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const appContext = useContext(AppContext);
   const [fieldWidth, setFieldWidth] = useState(0);
-  const appContext = React.useContext(AppContext);
   const [isDragging, setIsDragging] = useState(false);
 
   if (!appContext) return null;
@@ -38,18 +45,9 @@ const FieldBase: React.FC<FieldBaseProps> = ({
     const cleanup = combine(
       draggable({
         element: ref.current!,
-        onDragStart: (args) => {
-          // ----------------------------------------------------------------------
-          // Add drop targets around editor elements
-          // ----------------------------------------------------------------------
+        onDragStart: (_) => {
           appContext.setFormElements((prev) => {
-            // const id = args.source.data.id as string;
-            // // If the element we are dragging is from the sidebar
-            // // we don't modify the current form elements
-            // const elementIndexes = findElementIndexes(id, prev);
-            // if (elementIndexes.row === -1 && elementIndexes.col === -1) return prev;
-
-            // Draw placeholders dropzone around elements
+            // Initial placeholder drawing when the form is empty
             const newFormElements = [...prev];
             if (newFormElements.length === 0) {
               return [
@@ -62,33 +60,11 @@ const FieldBase: React.FC<FieldBaseProps> = ({
               ];
             }
 
-            // const newFormElements = { ...prev };
-            // let i = 0;
-            // Object.keys(prev).forEach((key) => {
-            //   // Add placeholder before the current index
-            //   if (i === index && i !== 0) {
-            //     newFormElements[`placeholder-${id}-${i - 1}`] = Constants.fieldTypes.placeholder;
-            //   }
-            //   newFormElements[key] = prev[key]!;
-            //   i++;
-            // });
             return newFormElements;
           });
-          // ----------------------------------------------------------------------
           setIsDragging(true);
         },
         onDrop: () => {
-          // remove all placeholders after drop
-          appContext.setFormElements((prev) => {
-            // const newFormElements = { ...prev };
-            // Object.keys(prev).forEach((key) => {
-            //   if (!key.startsWith("placeholder-")) {
-            //     newFormElements[key] = prev[key]!;
-            //   }
-            // });
-            // return newFormElements;
-            return prev;
-          });
           setIsDragging(false);
         },
         getInitialData: () => ({
@@ -106,12 +82,32 @@ const FieldBase: React.FC<FieldBaseProps> = ({
       ref={ref}
       className={["field-base", isDragging ? "is-dragging" : ""].join(" ")}
     >
-      {!Object.values(Constants.fieldTypes).includes(id as string) && (
+      {!Object.values(Constants.fieldTypes).includes(id) && (
         <>
-          <FieldDropzone position="top" fieldWidth={fieldWidth} row={row} col={col} />
-          <FieldDropzone position="right" fieldWidth={fieldWidth} row={row} col={col} />
-          <FieldDropzone position="bottom" fieldWidth={fieldWidth} row={row} col={col} />
-          <FieldDropzone position="left" fieldWidth={fieldWidth} row={row} col={col} />
+          <FieldDropzone
+            position="top"
+            fieldWidth={fieldWidth}
+            row={row}
+            col={col}
+          />
+          <FieldDropzone
+            position="right"
+            fieldWidth={fieldWidth}
+            row={row}
+            col={col}
+          />
+          <FieldDropzone
+            position="bottom"
+            fieldWidth={fieldWidth}
+            row={row}
+            col={col}
+          />
+          <FieldDropzone
+            position="left"
+            fieldWidth={fieldWidth}
+            row={row}
+            col={col}
+          />
         </>
       )}
       {label && <p className="field-base-label">{label}</p>}

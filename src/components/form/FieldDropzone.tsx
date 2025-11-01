@@ -13,7 +13,6 @@ const FieldDropzone = ({ position, fieldWidth }: FieldDropzoneProps) => {
 
   const onMouseEnter = () => {
     setIsHovering(true);
-    console.log("hovering dropzone");
   };
 
   const onMouseLeave = () => {

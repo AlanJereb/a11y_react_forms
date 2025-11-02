@@ -11,7 +11,6 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { DraggableItem } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
-import { nanoid } from "nanoid";
 import FieldDropzone from "./FieldDropzone";
 import { AppContext } from "../../contexts/AppContextProvider";
 
@@ -46,22 +45,6 @@ const FieldBase: FC<FieldBaseProps> = ({
       draggable({
         element: ref.current!,
         onDragStart: (_) => {
-          appContext.setFormElements((prev) => {
-            // Initial placeholder drawing when the form is empty
-            const newFormElements = [...prev];
-            if (newFormElements.length === 0) {
-              return [
-                [
-                  {
-                    id: nanoid(),
-                    fieldType: Constants.fieldTypes.placeholder,
-                  },
-                ],
-              ];
-            }
-
-            return newFormElements;
-          });
           setIsDragging(true);
         },
         onDrop: () => {

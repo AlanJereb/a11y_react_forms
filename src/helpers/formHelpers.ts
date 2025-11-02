@@ -37,10 +37,15 @@ const insertElementAt = ({
 };
 
 const removePlaceholderFormElement = (formElements: FormElements[][]) => {
-  const newFormElements = formElements.map((row) =>
-    row.filter((e) => Constants.fieldTypes.placeholder !== e.id),
-  );
-  return newFormElements;
+  return formElements.reduce<FormElements[][]>((acc, row) => {
+    const filtered = row.filter(
+      (e) => e.id !== Constants.fieldTypes.placeholder,
+    );
+    if (filtered.length > 0) {
+      acc.push(filtered);
+    }
+    return acc;
+  }, []);
 };
 
 export { areAllElementsEmpty, insertElementAt, removePlaceholderFormElement };

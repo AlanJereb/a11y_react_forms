@@ -13,7 +13,7 @@ export interface AppContextType {
 export const AppContext = createContext<AppContextType | null>(null);
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [formElements, setFormElements] = useState<FormElements[][]>([[]]);
+  const [formElements, setFormElements] = useState<FormElements[][]>([]);
   const [draggingElementId, setDraggingElementId] = useState<string>();
   return (
     <AppContext.Provider

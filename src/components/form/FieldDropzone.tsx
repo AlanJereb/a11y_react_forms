@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import Constants from "../../helpers/constants";
+import Constants, { placeholderFormElement } from "../../helpers/constants";
 import {
   insertElementAt,
   removePlaceholderFormElement,
 } from "../../helpers/formHelpers";
-import type { FormElements } from "../../types/types";
 import { AppContext } from "../../contexts/AppContextProvider";
 
 interface FieldDropzoneProps {
@@ -15,10 +14,6 @@ interface FieldDropzoneProps {
   col: number;
 }
 
-const placeholderFormElement: FormElements = {
-  fieldType: Constants.fieldTypes.placeholder,
-  id: Constants.fieldTypes.placeholder,
-};
 
 const FieldDropzone = ({
   position,
@@ -35,7 +30,7 @@ const FieldDropzone = ({
 
   if (!appContext) return null;
 
-  const removePlaceholders = () => {
+  const cleanup = () => {
     setIsHovering(false);
     placeholderAddedRef.current = false;
     console.log("dragLeave");
@@ -71,8 +66,8 @@ const FieldDropzone = ({
           });
         }
       },
-      onDragLeave: (_) => removePlaceholders(),
-      onDrop: (_) => removePlaceholders(),
+      onDragLeave: (_) => cleanup(),
+      onDrop: (_) => cleanup(),
     });
   }, []);
 

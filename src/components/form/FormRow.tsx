@@ -1,17 +1,18 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment } from "react";
 import FormElement from "./FormElement";
-import { AppContext } from "../../contexts/AppContextProvider";
+import editorStore from "../../store/editorStore";
 
 interface FormRowProps {
   rowIndex: number;
 }
 
 const FormRow = ({ rowIndex }: FormRowProps) => {
-  const appContext = useContext(AppContext);
-  if (!appContext) return null;
+  const formElements = editorStore((state) => state.formElements);
 
-  const rowElements = appContext.formElements[rowIndex];
+  const rowElements = formElements[rowIndex];
   if (!rowElements) return null;
+
+  console.log("FormRow render")
 
   return rowElements.map(({ fieldType, id }, index) => (
     <Fragment key={id}>

@@ -1,23 +1,25 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import FormCard from "./form/FormCard";
 import Constants, { placeholderFormElement } from "../helpers/constants";
 import FormRow from "./form/FormRow";
-import { AppContext } from "../contexts/AppContextProvider";
-import {
-  insertElementAt,
-  removePlaceholderFormElement,
-} from "../helpers/formHelpers";
+import editorStore from "../store/editorStore";
 
 const Editor = () => {
-  const appContext = useContext(AppContext);
   const ref = useRef<HTMLDivElement | null>(null);
-
-  if (!appContext) return null;
+  const formElements = editorStore((state) => state.formElements);
+  const draggingElementId = editorStore((state) => state.draggingElementId);
+  const setDraggingElementId = editorStore(
+    (state) => state.setDraggingElementId,
+  );
+  const removePlaceholderFormElement = editorStore(
+    (state) => state.removePlaceholderFormElement,
+  );
+  const insertElementAt = editorStore((state) => state.insertElementAt);
 
   const cleanup = () => {
-    appContext.setDraggingElementId?.(undefined);
-    appContext.setFormElements((prev) => removePlaceholderFormElement(prev));
+    setDraggingElementId?.(undefined);
+    removePlaceholderFormElement();
   };
 
   useEffect(() => {
@@ -25,30 +27,27 @@ const Editor = () => {
       element: ref.current!,
       canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
       onDragEnter: (args) => {
-        appContext.setDraggingElementId?.(args.source.data.id as string);
-        if (appContext.formElements.length === 0) {
+        setDraggingElementId?.(args.source.data.id as string);
+        if (formElements.length === 0) {
           // Set initial placeholder row element
-          appContext.setFormElements((prev) => {
-            return insertElementAt({
-              element: placeholderFormElement,
-              formElements: prev,
-              row: 0,
-              col: 0,
-              placeTo: "before",
-              destinationType: "row",
-            });
+          insertElementAt({
+            element: placeholderFormElement,
+            row: 0,
+            col: 0,
+            placeTo: "before",
+            destinationType: "row",
           });
         }
       },
       onDragLeave: () => cleanup(),
       onDrop: (_) => cleanup(),
     });
-  }, []);
+  }, [formElements]);
 
   return (
     <div ref={ref} className="component-editor">
-      {appContext.formElements.length === 0 ? (
-        !appContext.draggingElementId ? (
+      {formElements.length === 0 ? (
+        !draggingElementId ? (
           <div className="text-placeholder">
             {/* TODO Localization */}
             <p>{"Drop form fields here to build your form"}</p>
@@ -56,7 +55,7 @@ const Editor = () => {
         ) : null
       ) : (
         <FormCard>
-          {appContext.formElements.map((el, rowIndex) => (
+          {formElements.map((_, rowIndex) => (
             <FormRow key={rowIndex} rowIndex={rowIndex} />
           ))}
         </FormCard>

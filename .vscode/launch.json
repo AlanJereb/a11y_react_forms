@@ -7,7 +7,7 @@
       "name": "Firefox: Debug Vite",
       "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}/src",
-      "reloadOnAttach": true,
+      "reloadOnAttach": false,
       "pathMappings": [
         { "url": "http://localhost:5173/src", "path": "${workspaceFolder}/src" }
       ],

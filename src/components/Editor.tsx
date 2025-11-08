@@ -4,18 +4,25 @@ import FormCard from "./form/FormCard";
 import Constants, { placeholderFormElement } from "../helpers/constants";
 import FormRow from "./form/FormRow";
 import editorStore from "../store/editorStore";
+import { useShallow } from "zustand/shallow";
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const formElements = editorStore((state) => state.formElements);
-  const draggingElementId = editorStore((state) => state.draggingElementId);
-  const setDraggingElementId = editorStore(
-    (state) => state.setDraggingElementId,
+  const {
+    formElements,
+    draggingElementId,
+    setDraggingElementId,
+    removePlaceholderFormElement,
+    insertElementAt,
+  } = editorStore(
+    useShallow((state) => ({
+      formElements: state.formElements,
+      draggingElementId: state.draggingElementId,
+      setDraggingElementId: state.setDraggingElementId,
+      removePlaceholderFormElement: state.removePlaceholderFormElement,
+      insertElementAt: state.insertElementAt,
+    })),
   );
-  const removePlaceholderFormElement = editorStore(
-    (state) => state.removePlaceholderFormElement,
-  );
-  const insertElementAt = editorStore((state) => state.insertElementAt);
 
   const cleanup = () => {
     setDraggingElementId?.(undefined);

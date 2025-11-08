@@ -2,7 +2,6 @@ import React, {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
   type FC,
   type ReactNode,
 } from "react";
@@ -12,6 +11,7 @@ import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
 import FieldDropzone from "./FieldDropzone";
 import editorStore from "../../store/editorStore";
+import { useShallow } from "zustand/shallow";
 
 interface FieldBaseProps extends DraggableItem {
   children?: ReactNode;
@@ -25,14 +25,26 @@ const FieldBase: FC<FieldBaseProps> = ({
   row,
   col,
 }) => {
-  const formElements = editorStore((state) => state.formElements);
+  const {
+    // formElements,
+    fieldWidth,
+    isDragging,
+    setFieldWidth,
+    setFieldIsDragging,
+  } = editorStore(
+    useShallow((state) => ({
+      // formElements: state.formElements,
+      fieldWidth: state.fieldWidth[id] || 0,
+      isDragging: state.fieldIsDragging[id] || false,
+      setFieldWidth: state.setFieldWidth,
+      setFieldIsDragging: state.setFieldIsDragging,
+    })),
+  );
   const ref = useRef<HTMLDivElement | null>(null);
-  const [fieldWidth, setFieldWidth] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
 
   useLayoutEffect(() => {
     if (ref.current) {
-      setFieldWidth(ref.current.offsetWidth);
+      setFieldWidth(id, ref.current.offsetWidth);
     }
   }, []);
 
@@ -42,10 +54,10 @@ const FieldBase: FC<FieldBaseProps> = ({
       draggable({
         element: ref.current!,
         onDragStart: (_) => {
-          setIsDragging(true);
+          setFieldIsDragging(id, true);
         },
         onDrop: () => {
-          setIsDragging(false);
+          setFieldIsDragging(id, false);
         },
         getInitialData: () => ({
           type: Constants.fieldTypeCard,
@@ -67,12 +79,12 @@ const FieldBase: FC<FieldBaseProps> = ({
         style={{
           // position absolute on all placeholder elements but the first one to prevent
           // the layout shift
-          position:
-            fieldType !== Constants.fieldTypes.placeholder
-              ? "relative"
-              : formElements.length === 1
-                ? "relative"
-                : "absolute",
+          // position:
+          //   fieldType !== Constants.fieldTypes.placeholder
+          //     ? "relative"
+          //     : formElements.length === 1
+          //       ? "relative"
+          //       : "absolute",
         }}
       >
         {!Object.values(Constants.fieldTypes).includes(id) &&

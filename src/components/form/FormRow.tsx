@@ -12,8 +12,6 @@ const FormRow = ({ rowIndex }: FormRowProps) => {
   const rowElements = formElements[rowIndex];
   if (!rowElements) return null;
 
-  console.log("FormRow render")
-
   return rowElements.map(({ fieldType, id }, index) => (
     <Fragment key={id}>
       <FormElement fieldType={fieldType} id={id} col={index} row={rowIndex} />

@@ -25,20 +25,19 @@ const FieldBase: FC<FieldBaseProps> = ({
   row,
   col,
 }) => {
-  const {
-    // formElements,
-    fieldWidth,
-    isDragging,
-    setFieldWidth,
-    setFieldIsDragging,
-  } = editorStore(
+  const { fieldWidth, isDragging } = editorStore(
     useShallow((state) => ({
-      // formElements: state.formElements,
       fieldWidth: state.fieldWidth[id] || 0,
       isDragging: state.fieldIsDragging[id] || false,
-      setFieldWidth: state.setFieldWidth,
-      setFieldIsDragging: state.setFieldIsDragging,
     })),
+  );
+  const setFieldWidth = editorStore.getState().setFieldWidth;
+  const setFieldIsDragging = editorStore.getState().setFieldIsDragging;
+  const hasLonelyPlaceholder = editorStore(
+    (state) =>
+      state.formElements.length === 1 &&
+      state.formElements[0]?.length === 1 &&
+      state.formElements[0]?.[0]?.id === Constants.fieldTypes.placeholder,
   );
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -79,12 +78,12 @@ const FieldBase: FC<FieldBaseProps> = ({
         style={{
           // position absolute on all placeholder elements but the first one to prevent
           // the layout shift
-          // position:
-          //   fieldType !== Constants.fieldTypes.placeholder
-          //     ? "relative"
-          //     : formElements.length === 1
-          //       ? "relative"
-          //       : "absolute",
+          position:
+            fieldType !== Constants.fieldTypes.placeholder
+              ? "relative"
+              : hasLonelyPlaceholder
+                ? "relative"
+                : "absolute",
         }}
       >
         {!Object.values(Constants.fieldTypes).includes(id) &&

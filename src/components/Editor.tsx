@@ -2,31 +2,35 @@ import React, { useEffect, useRef } from "react";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import FormCard from "./form/FormCard";
 import Constants, { placeholderFormElement } from "../helpers/constants";
-import FormRow from "./form/FormRow";
 import editorStore from "../store/editorStore";
 import { useShallow } from "zustand/shallow";
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const {
-    formElements,
-    draggingElementId,
-    setDraggingElementId,
-    removePlaceholderFormElement,
-    insertElementAt,
-  } = editorStore(
+  const { draggingElementId } = editorStore(
     useShallow((state) => ({
-      formElements: state.formElements,
       draggingElementId: state.draggingElementId,
-      setDraggingElementId: state.setDraggingElementId,
-      removePlaceholderFormElement: state.removePlaceholderFormElement,
-      insertElementAt: state.insertElementAt,
     })),
+  );
+  const setDraggingElementId = editorStore.getState().setDraggingElementId;
+  const removePlaceholderFormElement =
+    editorStore.getState().removePlaceholderFormElement;
+  const insertElementAt = editorStore.getState().insertElementAt;
+  const formElementsAreEmpty = editorStore(
+    (state) => state.formElements.length === 0,
   );
 
   const cleanup = () => {
     setDraggingElementId?.(undefined);
-    removePlaceholderFormElement();
+    const { formElements: fe } = editorStore.getState();
+    const hasLonelyPlaceholder =
+      fe.length === 1 &&
+      fe[0]?.length === 1 &&
+      fe[0]?.[0]?.id === Constants.fieldTypes.placeholder;
+    if (hasLonelyPlaceholder) {
+      console.log("Editor cleanup");
+      removePlaceholderFormElement();
+    }
   };
 
   useEffect(() => {
@@ -34,8 +38,11 @@ const Editor = () => {
       element: ref.current!,
       canDrop: (args) => args.source.data.type === Constants.fieldTypeCard,
       onDragEnter: (args) => {
-        setDraggingElementId?.(args.source.data.id as string);
-        if (formElements.length === 0) {
+        const id = args.source.data.id as string;
+        if (editorStore.getState().draggingElementId !== id) {
+          setDraggingElementId?.(id);
+        }
+        if (formElementsAreEmpty) {
           // Set initial placeholder row element
           insertElementAt({
             element: placeholderFormElement,
@@ -49,11 +56,11 @@ const Editor = () => {
       onDragLeave: () => cleanup(),
       onDrop: (_) => cleanup(),
     });
-  }, [formElements]);
+  }, [formElementsAreEmpty]);
 
   return (
     <div ref={ref} className="component-editor">
-      {formElements.length === 0 ? (
+      {formElementsAreEmpty ? (
         !draggingElementId ? (
           <div className="text-placeholder">
             {/* TODO Localization */}
@@ -61,11 +68,7 @@ const Editor = () => {
           </div>
         ) : null
       ) : (
-        <FormCard>
-          {formElements.map((_, rowIndex) => (
-            <FormRow key={rowIndex} rowIndex={rowIndex} />
-          ))}
-        </FormCard>
+        <FormCard />
       )}
     </div>
   );

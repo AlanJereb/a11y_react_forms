@@ -17,16 +17,12 @@ const FieldDropzone = ({
   col,
 }: FieldDropzoneProps) => {
   const [isHovering, setIsHovering] = useState(false);
-  const formElements = editorStore((state) => state.formElements);
-  const removePlaceholderFormElement = editorStore(
-    (state) => state.removePlaceholderFormElement,
-  );
-  const insertElementAt = editorStore((state) => state.insertElementAt);
+  const removePlaceholderFormElement = editorStore.getState().removePlaceholderFormElement;
+  const insertElementAt = editorStore.getState().insertElementAt;
   const ref = useRef<HTMLDivElement>(null);
+  const placeholderAddedRef = useRef<String>(null);
   const expandedHeight = "calc(50px + 3rem)";
   const expandedWidth = `calc(${fieldWidth}px - 1.5rem)`; // -1.5rem deletes one padding ...max 2 columns per form
-  const placeholderAddedRef = useRef<String>(null);
-  // const
 
   const cleanup = () => {
     placeholderAddedRef.current = null;
@@ -42,12 +38,13 @@ const FieldDropzone = ({
         setIsHovering(true);
         if (!placeholderAddedRef.current) {
           placeholderAddedRef.current = position;
-          const hasPlaceholder = formElements.some((r) =>
-            r.some((e) => e.id === Constants.fieldTypes.placeholder),
+          const {formElements: fe} = editorStore.getState();
+          const formElementsContainPlaceholder = fe.some((row) =>
+            row.some((el) => el.id === Constants.fieldTypes.placeholder)
           );
           console.log(`dragEnter position ${placeholderAddedRef.current}`);
-          console.log(`hasPlaceholder ${hasPlaceholder}`);
-          if (hasPlaceholder) {
+          console.log(`hasPlaceholder ${formElementsContainPlaceholder}`);
+          if (formElementsContainPlaceholder) {
             return; // do nothing if one already exists
           }
           insertElementAt({

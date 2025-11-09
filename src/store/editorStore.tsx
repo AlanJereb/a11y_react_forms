@@ -1,4 +1,4 @@
-import { combine, devtools, persist } from "zustand/middleware";
+import { combine, devtools } from "zustand/middleware";
 import Constants from "../helpers/constants";
 import type { FormElements } from "../types/types";
 import { create } from "zustand";

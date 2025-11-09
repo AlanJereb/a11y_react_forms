@@ -8,8 +8,7 @@ import editorStore from "../../store/editorStore.js";
 
 const FieldPlaceholder = (props: Pick<DraggableItem, "row" | "col">) => {
   const { row, col } = props;
-  const formElements = editorStore((state) => state.formElements);
-  const setFormElements = editorStore((state) => state.setFormElements);
+  const setFormElements = editorStore.getState().setFormElements;
   const ref = useRef<HTMLDivElement | null>(null);
   const isHovered = "is-hovered";
 
@@ -27,6 +26,7 @@ const FieldPlaceholder = (props: Pick<DraggableItem, "row" | "col">) => {
           .fieldType as DraggableItem["fieldType"];
         const id = args.source.data.id as string;
         if (fieldType && id) {
+          const { formElements } = editorStore.getState();
           const newFormElements = [...formElements];
           // swap placeholder with the dropped element
           newFormElements[row]?.splice(col, 1, {

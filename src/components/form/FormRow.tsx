@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import FormElement from "./FormElement";
 import editorStore from "../../store/editorStore";
 
@@ -12,11 +12,11 @@ const FormRow = ({ rowIndex }: FormRowProps) => {
   const rowElements = formElements[rowIndex];
   if (!rowElements) return null;
 
-  return rowElements.map(({ fieldType, id }, index) => (
-    <Fragment key={id}>
+  return  <div className="components-form-form_row" key={rowIndex}>
+    {rowElements.map(({ fieldType, id }, index) => (
       <FormElement fieldType={fieldType} id={id} col={index} row={rowIndex} />
-    </Fragment>
-  ));
+    ))}
+  </div>;
 };
 
 export default FormRow;

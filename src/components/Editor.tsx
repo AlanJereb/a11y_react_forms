@@ -3,14 +3,11 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 import FormCard from "./form/FormCard";
 import Constants, { placeholderFormElement } from "../helpers/constants";
 import editorStore from "../store/editorStore";
-import { useShallow } from "zustand/shallow";
 
 const Editor = () => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const { draggingElementId } = editorStore(
-    useShallow((state) => ({
-      draggingElementId: state.draggingElementId,
-    })),
+  const draggingElementId = editorStore((state) =>
+    state.formElements.length === 0 ? state.draggingElementId : undefined,
   );
   const setDraggingElementId = editorStore.getState().setDraggingElementId;
   const removePlaceholderFormElement =
@@ -28,7 +25,6 @@ const Editor = () => {
       fe[0]?.length === 1 &&
       fe[0]?.[0]?.id === Constants.fieldTypes.placeholder;
     if (hasLonelyPlaceholder) {
-      console.log("Editor cleanup");
       removePlaceholderFormElement();
     }
   };

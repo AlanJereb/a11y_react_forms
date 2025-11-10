@@ -8,8 +8,6 @@ export interface EditorStoreInterface {
   setFormElements: (formElements: FormElements[][]) => void;
   draggingElementId?: string;
   setDraggingElementId?: (draggingElementId: string | undefined) => void;
-  fieldWidth: { [key: string]: number };
-  setFieldWidth: (id: string, width: number) => void;
   fieldIsDragging: { [key: string]: boolean };
   setFieldIsDragging: (id: string, isDragging: boolean) => void;
   removePlaceholderFormElement: () => void;
@@ -25,33 +23,42 @@ export interface EditorStoreInterface {
 const editorStore = create(
   devtools(
     combine<
-      Pick<EditorStoreInterface, "formElements" | "draggingElementId" | "fieldWidth" | "fieldIsDragging">,
-      Omit<EditorStoreInterface, "formElements" | "draggingElementId" | "fieldWidth" | "fieldIsDragging">
-    >({ formElements: [], draggingElementId: undefined, fieldWidth: {}, fieldIsDragging: {} }, (set) => ({
-      setFormElements: (formElements) => set({ formElements }),
-      setDraggingElementId: (draggingElementId) => set({ draggingElementId }),
-      setFieldWidth: (id, width) => set((state) => ({
-        fieldWidth: { ...state.fieldWidth, [id]: width },
-      })),
-      setFieldIsDragging: (id, isDragging) => set((state) => ({
-        fieldIsDragging: { ...state.fieldIsDragging, [id]: isDragging },
-      })),
-      removePlaceholderFormElement: () =>
-        set((state) => ({
-          formElements: removePlaceholderFormElementAction(state.formElements),
-        })),
-      insertElementAt: ({ element, row, col, placeTo, destinationType }) =>
-        set((state) => ({
-          formElements: insertElementAtAction({
-            element,
-            formElements: state.formElements,
-            row,
-            col,
-            placeTo,
-            destinationType,
-          }),
-        })),
-    })),
+      Pick<
+        EditorStoreInterface,
+        "formElements" | "draggingElementId" | "fieldIsDragging"
+      >,
+      Omit<
+        EditorStoreInterface,
+        "formElements" | "draggingElementId" | "fieldIsDragging"
+      >
+    >(
+      { formElements: [], draggingElementId: undefined, fieldIsDragging: {} },
+      (set) => ({
+        setFormElements: (formElements) => set({ formElements }),
+        setDraggingElementId: (draggingElementId) => set({ draggingElementId }),
+        setFieldIsDragging: (id, isDragging) =>
+          set((state) => ({
+            fieldIsDragging: { ...state.fieldIsDragging, [id]: isDragging },
+          })),
+        removePlaceholderFormElement: () =>
+          set((state) => ({
+            formElements: removePlaceholderFormElementAction(
+              state.formElements,
+            ),
+          })),
+        insertElementAt: ({ element, row, col, placeTo, destinationType }) =>
+          set((state) => ({
+            formElements: insertElementAtAction({
+              element,
+              formElements: state.formElements,
+              row,
+              col,
+              placeTo,
+              destinationType,
+            }),
+          })),
+      }),
+    ),
   ),
 );
 

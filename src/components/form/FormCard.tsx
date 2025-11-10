@@ -12,9 +12,12 @@ const FormCard = () => {
 
   return (
     <div className="components-form-form_card">
-      {formElements.map((_, rowIndex) => (
-        <FormRow key={rowIndex} rowIndex={rowIndex} />
-      ))}
+      {formElements.map((_, rowIndex) => {
+        const rowKey = formElements[rowIndex]
+          ? formElements[rowIndex].map((el) => el.id).join("-")
+          : `row-${rowIndex}`;
+        return <FormRow key={rowKey} rowIndex={rowIndex} />;
+      })}
     </div>
   );
 };

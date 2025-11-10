@@ -9,6 +9,7 @@ import editorStore from "../../store/editorStore.js";
 const FieldPlaceholder = (props: Pick<DraggableItem, "row" | "col">) => {
   const { row, col } = props;
   const setFormElements = editorStore.getState().setFormElements;
+  const removePlaceholderFormElement = editorStore.getState().removePlaceholderFormElement;
   const ref = useRef<HTMLDivElement | null>(null);
   const isHovered = "is-hovered";
 
@@ -20,6 +21,7 @@ const FieldPlaceholder = (props: Pick<DraggableItem, "row" | "col">) => {
       },
       onDragLeave: (_) => {
         ref.current?.classList.remove(isHovered);
+        removePlaceholderFormElement();
       },
       onDrop: (args) => {
         const fieldType = args.source.data

@@ -9,22 +9,24 @@ $base_dimension: 1.5rem;
     height: $base_dimension;
     width: calc(100% - 2 * $base_dimension);
     left: $base_dimension;
-    bottom: calc(50px + 1.5rem);
+    top: 0;
   }
   &.right {
     height: calc(100% - 2 * $base_dimension);
     width: $base_dimension;
     top: $base_dimension;
+    right: 0;
   }
   &.bottom {
     height: $base_dimension;
     width: calc(100% - 2 * $base_dimension);
     left: $base_dimension;
-    top: calc(50px + 1.5rem);
+    bottom: 0;
   }
   &.left {
     height: calc(100% - 2 * $base_dimension);
     width: $base_dimension;
     top: $base_dimension;
+    left: 0;
   }
 }

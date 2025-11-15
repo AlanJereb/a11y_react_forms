@@ -4,7 +4,6 @@
   width: 100%;
   min-width: 368px;
   .field-base-content {
-    padding: 1.5rem;
     :hover {
       cursor: grab;
     }
@@ -14,11 +13,12 @@
     position: relative;
     p.field-base-label {
       position: absolute;
-      top: 0;
-      left: 1.5rem;
+      top: -1.25rem;
+      left: 0.75rem;
       text-align: start;
       font-size: 1rem;
       font-weight: 500;
+      color: $color_text_primary;
     }
   }
 }

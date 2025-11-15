@@ -1,32 +1,28 @@
 @use "../../variables" as *;
 
-$base_dimension: 1.5rem;
+$base_dimension: 1rem;
 
 .field-dropzone {
-  background-color: rgba(red, .2);
+  background-color: rgba($color_dropzone, .2);
   position: absolute;
   &.top {
     height: $base_dimension;
-    width: calc(100% - 2 * $base_dimension);
-    left: $base_dimension;
-    top: 0;
+    width: 100%;
+    top: -$base_dimension;
   }
   &.right {
-    height: calc(100% - 2 * $base_dimension);
-    width: $base_dimension;
-    top: $base_dimension;
-    right: 0;
+    height: 100%;
+    width: $base_dimension * .75;
+    right: -$base_dimension * .75;
   }
   &.bottom {
     height: $base_dimension;
-    width: calc(100% - 2 * $base_dimension);
-    left: $base_dimension;
-    bottom: 0;
+    width: 100%;
+    bottom: -$base_dimension;
   }
   &.left {
-    height: calc(100% - 2 * $base_dimension);
-    width: $base_dimension;
-    top: $base_dimension;
-    left: 0;
+    height: 100%;
+    width: $base_dimension * .75;
+    left: -$base_dimension * .75;
   }
 }

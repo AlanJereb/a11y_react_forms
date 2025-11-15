@@ -4,6 +4,6 @@
   @extend %field_base;
   min-height: 50px;
   &.is-hovered {
-    background-color: $color_placeholder;
+    background-color: rgba($color_placeholder, 0.3);
   }
 }

@@ -1,10 +1,13 @@
 $color_background: #F0F0F3;
-$color_placeholder: #A0A0A0;
+$color_placeholder: #b9b9b9;
+$color_dropzone: #a7a7a7;
 // Shadow colors
 $color_shadow_light: #FFFFFF;
 $color_shadow_dark: #AEAEC0;
 // Card  colors
 $color_card_background: #FAFAFA;
+// Text colors
+$color_text_primary: #333333;
 
 
 %field_base {
@@ -18,7 +21,5 @@ $color_card_background: #FAFAFA;
   }
   font-size: 20px;
   font-weight: 500;
-  box-shadow: inset -5px -5px 10px rgba($color_shadow_light, 0.7),
-    inset 5px 5px 10px rgba($color_shadow_dark, 0.2);
   outline: none;
 }

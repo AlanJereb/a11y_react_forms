@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, type FC, type ReactNode } from "react";
-import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { DraggableItem } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
@@ -19,6 +19,7 @@ const FieldBase: FC<FieldBaseProps> = ({
   row,
   col,
 }) => {
+  const [isDraggedOver, setIsDraggedOver] = React.useState(false);
   const { isDragging } = editorStore(
     useShallow((state) => ({
       isDragging: state.fieldIsDragging[id] || false,
@@ -44,6 +45,15 @@ const FieldBase: FC<FieldBaseProps> = ({
           fieldType: fieldType,
         }),
       }),
+      dropTargetForElements({
+        element: ref.current!,
+        onDragEnter: () => {
+          setIsDraggedOver(true);
+        },
+        onDragLeave: () => {
+          setIsDraggedOver(false);
+        },
+      }),
     );
     return cleanup;
   }, [id]);
@@ -55,7 +65,7 @@ const FieldBase: FC<FieldBaseProps> = ({
     >
       <div className="field-base-content">
         {!Object.values(Constants.fieldTypes).includes(id) &&
-          id !== Constants.fieldTypes.placeholder && (
+          id !== Constants.fieldTypes.placeholder && isDraggedOver && (
             <>
               <FieldDropzone position="top" row={row} col={col} />
               <FieldDropzone position="right" row={row} col={col} />

@@ -1,51 +1,91 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, type FC, type ReactNode } from "react";
 import {
-  draggable
+  draggable,
+  dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { DraggableItem } from "../../types/types";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import Constants from "../../helpers/constants";
+import FieldDropzone from "./FieldDropzone";
+import editorStore from "../../store/editorStore";
+import { useShallow } from "zustand/shallow";
 
 interface FieldBaseProps extends DraggableItem {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-const FieldBase: React.FC<FieldBaseProps> = ({
+const FieldBase: FC<FieldBaseProps> = ({
   id,
   fieldType,
   label,
   children,
-  index,
+  row,
+  col,
 }) => {
+  const [isDraggedOver, setIsDraggedOver] = React.useState(false);
+  const { isDragging } = editorStore(
+    useShallow((state) => ({
+      isDragging: state.fieldIsDragging[id] || false,
+    })),
+  );
+  const setFieldIsDragging = editorStore.getState().setFieldIsDragging;
+  const placeholderRendered = editorStore
+    .getState()
+    .formElements.some((r) =>
+      r.some((el) => el.id === Constants.fieldTypes.placeholder),
+    );
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (!ref.current) return;
     const cleanup = combine(
       draggable({
         element: ref.current!,
-        onDragStart: () => {
-          // TODO: modify add drop targets between editor elements, between all elements,
-          // but the element on current index and one behind and one in front of it
-          // TODO: move editor state to the app context, so that you can access from both sidebar and editor
-          setIsDragging(true)
+        onDragStart: (_) => {
+          setFieldIsDragging(id, true);
         },
-        onDrop: () => setIsDragging(false),
+        onDrop: () => {
+          setFieldIsDragging(id, false);
+        },
         getInitialData: () => ({
           type: Constants.fieldTypeCard,
           id: id,
           fieldType: fieldType,
         }),
       }),
+      dropTargetForElements({
+        element: ref.current!,
+        onDragEnter: () => {
+          setIsDraggedOver(true);
+        },
+        onDragLeave: () => {
+          setIsDraggedOver(false);
+        },
+      }),
     );
     return cleanup;
   }, [id]);
 
   return (
-    <div ref={ref} className={`p-[1.5rem] hover:cursor-grab ${isDragging ? "opacity-40" : ""}`}>
-      {label && <p className="text-start text-[1rem] font-medium">{label}</p>}
-      {children}
+    <div
+      ref={ref}
+      className={["field-base", isDragging ? "is-dragging" : ""].join(" ")}
+    >
+      <div className="field-base-content">
+        {!Object.values(Constants.fieldTypes).includes(id) &&
+          id !== Constants.fieldTypes.placeholder &&
+          !placeholderRendered &&
+          isDraggedOver && (
+            <>
+              <FieldDropzone position="top" row={row} col={col} />
+              <FieldDropzone position="right" row={row} col={col} />
+              <FieldDropzone position="bottom" row={row} col={col} />
+              <FieldDropzone position="left" row={row} col={col} />
+            </>
+          )}
+        {label && <p className="field-base-label">{label}</p>}
+        {children}
+      </div>
     </div>
   );
 };

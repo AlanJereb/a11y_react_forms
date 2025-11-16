@@ -1,0 +1,5 @@
+@use "../../variables" as *;
+
+.field-text {
+  @extend %field_base;
+}

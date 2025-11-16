@@ -1,0 +1,24 @@
+@use "../../variables" as *;
+
+.field-base {
+  width: 100%;
+  min-width: 368px;
+  .field-base-content {
+    :hover {
+      cursor: grab;
+    }
+    &.is-dragging {
+      opacity: 0.4;
+    }
+    position: relative;
+    p.field-base-label {
+      position: absolute;
+      top: -1.25rem;
+      left: 0.75rem;
+      text-align: start;
+      font-size: 1rem;
+      font-weight: 500;
+      color: $color_text_primary;
+    }
+  }
+}

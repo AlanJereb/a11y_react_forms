@@ -1,0 +1,36 @@
+@use "../../variables" as *;
+
+$base_dimension: 1rem;
+
+.field-dropzone {
+  background-color: rgba($color_dropzone, .2);
+  position: absolute;
+  &.top {
+    height: $base_dimension;
+    width: 100%;
+    top: -$base_dimension;
+  }
+  &.right {
+    height: 100%;
+    width: $base_dimension * .75;
+    right: -$base_dimension * .75;
+  }
+  &.bottom {
+    height: $base_dimension;
+    width: 100%;
+    bottom: -$base_dimension;
+  }
+  &.left {
+    height: 100%;
+    width: $base_dimension * .75;
+    left: -$base_dimension * .75;
+  }
+  &.is-dragged-over {
+    // Animate with blinking effect
+    animation: blink 0.25s step-start 0s infinite;
+  }
+}
+
+@keyframes blink {
+  50%  { opacity: 0; }
+}

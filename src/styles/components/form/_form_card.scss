@@ -1,0 +1,10 @@
+@use "../../variables" as *;
+
+.components-form-form_card {
+  border-radius: 1rem;
+  background-color: $color_card_background;
+  padding: 1rem;
+  margin: 0 auto;
+  min-width: 400px;
+  text-align: center;
+}

@@ -25,4 +25,12 @@ $base_dimension: 1rem;
     width: $base_dimension * .75;
     left: -$base_dimension * .75;
   }
+  &.is-dragged-over {
+    // Animate with blinking effect
+    animation: blink 0.25s step-start 0s infinite;
+  }
+}
+
+@keyframes blink {
+  50%  { opacity: 0; }
 }

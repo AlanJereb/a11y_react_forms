@@ -1,3 +1,6 @@
+// ---------------------------------
+// Colors
+// ---------------------------------
 $color_background: #F0F0F3;
 $color_placeholder: #b9b9b9;
 $color_dropzone: #a7a7a7;
@@ -8,6 +11,11 @@ $color_shadow_dark: #AEAEC0;
 $color_card_background: #FAFAFA;
 // Text colors
 $color_text_primary: #333333;
+// ---------------------------------
+// Dimensions
+// ---------------------------------
+$side_component_width: 450px;
+// ---------------------------------
 
 
 %field_base {
@@ -22,4 +30,16 @@ $color_text_primary: #333333;
   font-size: 20px;
   font-weight: 500;
   outline: none;
+}
+
+%side_component_base {
+  border-radius: 2rem;
+  box-shadow:
+    // -10px -10px 30px 0 $color_shadow_light,
+    10px 10px 30px 0 rgba($color_shadow_dark, 0.4);
+  margin-bottom: 8rem;
+  user-select: none;
+  background-color: $color_card_background;
+  transition: flex-basis 250ms ease-in-out;
+  overflow: hidden;
 }

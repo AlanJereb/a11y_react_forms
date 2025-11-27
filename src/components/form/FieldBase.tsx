@@ -29,6 +29,7 @@ const FieldBase: FC<FieldBaseProps> = ({
     })),
   );
   const setFieldIsDragging = editorStore.getState().setFieldIsDragging;
+  const setFieldFocusId = editorStore.getState().setFieldFocusId;
   const placeholderRendered = editorStore
     .getState()
     .formElements.some((r) =>
@@ -66,10 +67,24 @@ const FieldBase: FC<FieldBaseProps> = ({
     return cleanup;
   }, [id]);
 
+  const _focusField = (e: React.FocusEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setFieldFocusId(id);
+  }
+
+  const _blurField = (e: React.FocusEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setFieldFocusId(undefined);
+  }
+
   return (
     <div
       ref={ref}
       className={["field-base", isDragging ? "is-dragging" : ""].join(" ")}
+      onFocus={_focusField}
+      onBlur={_blurField}
     >
       <div className="field-base-content">
         {!Object.values(Constants.fieldTypes).includes(id) &&

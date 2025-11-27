@@ -1,7 +1,7 @@
 @use "../variables" as *;
 
 .component-editor {
-  flex: 7;
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: start;
@@ -16,5 +16,6 @@
   .text-placeholder p {
     margin-top:  50px;
     font-size: 1.2rem;
+    color: $color_text_primary;
   }
 }

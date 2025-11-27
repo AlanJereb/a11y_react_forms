@@ -1,0 +1,10 @@
+@use "../variables" as *;
+
+.component-settings {
+  flex: 0 0 0px;
+  @extend %side_component_base;
+  &.is-open {
+    flex-basis: $side_component_width;
+    padding: 4rem 1rem;
+  }
+}

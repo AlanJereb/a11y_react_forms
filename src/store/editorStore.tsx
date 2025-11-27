@@ -6,10 +6,16 @@ import { create } from "zustand";
 export interface EditorStoreInterface {
   formElements: FormElements[][];
   setFormElements: (formElements: FormElements[][]) => void;
+
   draggingElementId?: string;
   setDraggingElementId?: (draggingElementId: string | undefined) => void;
+
   fieldIsDragging: { [key: string]: boolean };
   setFieldIsDragging: (id: string, isDragging: boolean) => void;
+
+  fieldFocusId?: string;
+  setFieldFocusId: (fieldFocusId: string | undefined) => void;
+
   removePlaceholderFormElement: () => void;
   insertElementAt: ({
     element,
@@ -20,19 +26,24 @@ export interface EditorStoreInterface {
   }: Omit<TypeInsertElementAt, "formElements">) => void;
 }
 
+type valueTypes =
+  | "formElements"
+  | "draggingElementId"
+  | "fieldIsDragging"
+  | "fieldFocusId";
+
 const editorStore = create(
   devtools(
     combine<
-      Pick<
-        EditorStoreInterface,
-        "formElements" | "draggingElementId" | "fieldIsDragging"
-      >,
-      Omit<
-        EditorStoreInterface,
-        "formElements" | "draggingElementId" | "fieldIsDragging"
-      >
+      Pick<EditorStoreInterface, valueTypes>,
+      Omit<EditorStoreInterface, valueTypes>
     >(
-      { formElements: [], draggingElementId: undefined, fieldIsDragging: {} },
+      {
+        formElements: [],
+        draggingElementId: undefined,
+        fieldIsDragging: {},
+        fieldFocusId: undefined,
+      },
       (set) => ({
         setFormElements: (formElements) => set({ formElements }),
         setDraggingElementId: (draggingElementId) => set({ draggingElementId }),
@@ -40,6 +51,7 @@ const editorStore = create(
           set((state) => ({
             fieldIsDragging: { ...state.fieldIsDragging, [id]: isDragging },
           })),
+        setFieldFocusId: (fieldFocusId) => set({ fieldFocusId }),
         removePlaceholderFormElement: () =>
           set((state) => ({
             formElements: removePlaceholderFormElementAction(

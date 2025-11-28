@@ -10,7 +10,7 @@ const Settings = () => {
         " ",
       )}
     >
-      TODO
+      
     </div>
   );
 };

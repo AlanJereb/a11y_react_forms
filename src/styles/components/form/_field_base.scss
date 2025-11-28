@@ -20,5 +20,10 @@
       font-weight: 500;
       color: $color_text_primary;
     }
+    // Focus state for inputs
+    &:not(p):focus-within {
+      border: 1px solid $color_primary;
+      border-radius: 1rem;
+    }
   }
 }

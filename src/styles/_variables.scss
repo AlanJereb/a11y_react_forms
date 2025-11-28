@@ -1,14 +1,16 @@
 // ---------------------------------
 // Colors
 // ---------------------------------
+// App colors
+$color_primary: #4A90E2;
+// Background colors
 $color_background: #F0F0F3;
 $color_placeholder: #b9b9b9;
 $color_dropzone: #a7a7a7;
+$color_card_background: #FAFAFA;
 // Shadow colors
 $color_shadow_light: #FFFFFF;
 $color_shadow_dark: #AEAEC0;
-// Card  colors
-$color_card_background: #FAFAFA;
 // Text colors
 $color_text_primary: #333333;
 // ---------------------------------
@@ -33,6 +35,7 @@ $side_component_width: 450px;
 }
 
 %side_component_base {
+  padding: 4rem 0;
   border-radius: 2rem;
   box-shadow:
     // -10px -10px 30px 0 $color_shadow_light,
@@ -40,6 +43,6 @@ $side_component_width: 450px;
   margin-bottom: 8rem;
   user-select: none;
   background-color: $color_card_background;
-  transition: flex-basis 250ms ease-in-out;
+  transition: flex-basis 250ms ease-out;
   overflow: hidden;
 }

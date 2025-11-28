@@ -2,9 +2,10 @@
 
 .component-settings {
   flex: 0 0 0px;
+  margin-left: 0;
   @extend %side_component_base;
   &.is-open {
+    margin-left: 4rem; // we cannot use gap of the flex container
     flex-basis: $side_component_width;
-    padding: 4rem 1rem;
   }
 }

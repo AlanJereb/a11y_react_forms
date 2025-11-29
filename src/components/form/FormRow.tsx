@@ -12,11 +12,19 @@ const FormRow = ({ rowIndex }: FormRowProps) => {
   const rowElements = formElements[rowIndex];
   if (!rowElements) return null;
 
-  return  <div className="components-form-form_row" key={rowIndex}>
-    {rowElements.map(({ fieldType, id }, index) => (
-      <FormElement fieldType={fieldType} id={id} col={index} row={rowIndex} />
-    ))}
-  </div>;
+  return (
+    <div className="components-form-form_row" key={rowIndex}>
+      {rowElements.map(({ fieldType, id }, index) => (
+        <FormElement
+          key={id}
+          fieldType={fieldType}
+          id={id}
+          col={index}
+          row={rowIndex}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default FormRow;

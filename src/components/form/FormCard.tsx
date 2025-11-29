@@ -3,6 +3,7 @@ import FormRow from "./FormRow";
 import { useShallow } from "zustand/shallow";
 import editorStore from "../../store/editorStore";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import Constants from "../../helpers/constants";
 
 const FormCard = () => {
   const { formElements } = editorStore(
@@ -10,14 +11,22 @@ const FormCard = () => {
       formElements: state.formElements,
     })),
   );
-  const removePlaceholderFormElement = editorStore.getState().removePlaceholderFormElement;
+  const removePlaceholderFormElement =
+    editorStore.getState().removePlaceholderFormElement;
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return dropTargetForElements({
       element: ref.current!,
       onDragLeave: (_) => {
-        removePlaceholderFormElement();
+        const { formElements: fe } = editorStore.getState();
+        const hasLonelyPlaceholder =
+          fe.length === 1 &&
+          fe[0]?.length === 1 &&
+          fe[0]?.[0]?.id === Constants.fieldTypes.placeholder;
+        if (!hasLonelyPlaceholder) {
+          removePlaceholderFormElement();
+        }
       },
     });
   }, []);

@@ -33,5 +33,21 @@
       "preLaunchTask": "npm: dev" // Optional: it is faster to start vite manually
       // -----------------------------------------------------
     },
+    // Attach to already running Firefox instance
+    {
+      "type": "firefox",
+      "request": "attach",
+      "name": "Firefox: Attach to Vite",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/src",
+      "pathMappings": [
+        { "url": "http://localhost:5173/src", "path": "${workspaceFolder}/src" }
+      ],
+      // -----------------------------------------------------
+      // Skip files in node internals when stepping through code (debugging)
+      // -----------------------------------------------------
+      "skipFiles": ["<node_internals>/**"]
+      // -----------------------------------------------------
+    }
   ]
 }
